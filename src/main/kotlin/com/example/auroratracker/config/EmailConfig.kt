@@ -7,12 +7,11 @@ import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.mail.javamail.JavaMailSenderImpl
 
 @Configuration
-class EmailConfig {
-
+class EmailConfig{
       val dotenv: Dotenv? = Dotenv.configure().ignoreIfMissing().load()
 
       @Bean
-      fun getJavaMailSender(): JavaMailSender {
+      fun JavaMailSender(): JavaMailSender {
             val mailSender = JavaMailSenderImpl()
             mailSender.host = dotenv?.get("MAIL_HOST") ?: ""
             mailSender.port = (dotenv?.get("MAIL_PORT") ?: "587").toInt()
@@ -28,5 +27,4 @@ class EmailConfig {
 
             return mailSender
       }
-
 }
