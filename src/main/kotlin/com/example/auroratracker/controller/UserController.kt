@@ -2,6 +2,7 @@ package com.example.auroratracker.controller
 
 import com.example.auroratracker.dto.UserDto
 import com.example.auroratracker.service.UserService
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -11,9 +12,9 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/api/users")
-class UserController(
-      private val userService: UserService
-) {
+class UserController {
+
+      private lateinit var userService: UserService
 
       @GetMapping("all")
       fun getAllUsers(): ResponseEntity<List<UserDto>> = ResponseEntity.ok(userService.getAllUsers())
@@ -26,6 +27,13 @@ class UserController(
 
       @PostMapping("save")
       fun saveUser(userDto: UserDto): ResponseEntity<UserDto> {
+            if(!checkValidRequestBody(userDto)) {
+                  return ResponseEntity.badRequest().body(null)
+            }
+
+            if(userService.checkIfUserExists(userDto)) {
+                  return ResponseEntity.status(HttpStatus.CONFLICT).body(null)
+            }
             val savedUser = userService.saveUser(userDto)
             return ResponseEntity.ok(savedUser)
       }
@@ -40,5 +48,8 @@ class UserController(
             }
       }
 
-
+      private fun checkValidRequestBody(userDto: UserDto): Boolean {
+            return userDto.name != null && userDto.email != null && userDto.phoneNumber != null &&
+                   userDto.lon != null && userDto.lat != null
+      }
 }
