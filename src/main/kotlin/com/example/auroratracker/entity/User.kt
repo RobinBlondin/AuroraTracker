@@ -12,5 +12,5 @@ class User (
       val phoneNumber: String? = null,
       val lon: Double? = null,
       val lat: Double? = null,
-      val lastNotificationTime: LocalDateTime? = null,
+      var lastNotificationTime: LocalDateTime? = null,
 ): BaseEntity()
