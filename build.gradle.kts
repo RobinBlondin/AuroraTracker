@@ -1,9 +1,9 @@
 plugins {
-      kotlin("jvm") version "1.9.25"
-      kotlin("plugin.spring") version "1.9.25"
+      kotlin("jvm") version "2.2.0"
+      kotlin("plugin.spring") version "2.2.0"
       id("org.springframework.boot") version "3.5.4"
       id("io.spring.dependency-management") version "1.1.7"
-      kotlin("plugin.jpa") version "1.9.25"
+      kotlin("plugin.jpa") version "2.2.0"
 }
 
 group = "com.example"
@@ -25,6 +25,13 @@ dependencies {
       implementation("org.springframework.boot:spring-boot-starter-web")
       implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
       implementation("org.mapstruct:mapstruct:1.6.3")
+      implementation("org.springframework.boot:spring-boot-starter-mail:3.5.4")
+      implementation("org.springframework:spring-context-support:6.2.9")
+      implementation("io.github.cdimascio:dotenv-java:3.2.0")
+      implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0")
+      implementation("com.fasterxml.jackson.core:jackson-databind:2.19.2")
+      implementation("com.fasterxml.jackson.core:jackson-core:2.19.2")
+      implementation("com.squareup.okhttp3:okhttp:5.1.0")
       implementation("org.jetbrains.kotlin:kotlin-reflect")
       developmentOnly("org.springframework.boot:spring-boot-devtools")
       runtimeOnly("org.postgresql:postgresql")
