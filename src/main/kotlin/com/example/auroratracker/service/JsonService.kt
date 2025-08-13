@@ -20,5 +20,4 @@ class JsonService {
       final inline fun <reified T> parse(json: String): T {
             return jsonParser.decodeFromString(json)
       }
-
 }
