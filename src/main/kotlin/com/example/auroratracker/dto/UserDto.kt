@@ -7,7 +7,7 @@ class UserDto(
       val name: String? = null,
       val email: String? = null,
       val phoneNumber: String? = null,
-      val lon: Double? = null,
-      val lat: Double? = null,
-      val lastNotificationTime: LocalDateTime? = null
+      val lon: Double,
+      val lat: Double,
+      var lastNotificationTime: LocalDateTime? = null
 )
