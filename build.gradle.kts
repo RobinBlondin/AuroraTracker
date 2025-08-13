@@ -1,6 +1,7 @@
 plugins {
       kotlin("jvm") version "2.2.0"
       kotlin("plugin.spring") version "2.2.0"
+      kotlin("plugin.serialization") version "2.2.0"
       id("org.springframework.boot") version "3.5.4"
       id("io.spring.dependency-management") version "1.1.7"
       kotlin("plugin.jpa") version "2.2.0"
@@ -32,6 +33,7 @@ dependencies {
       implementation("com.fasterxml.jackson.core:jackson-databind:2.19.2")
       implementation("com.fasterxml.jackson.core:jackson-core:2.19.2")
       implementation("com.squareup.okhttp3:okhttp:5.1.0")
+      implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
       implementation("org.jetbrains.kotlin:kotlin-reflect")
       developmentOnly("org.springframework.boot:spring-boot-devtools")
       runtimeOnly("org.postgresql:postgresql")
