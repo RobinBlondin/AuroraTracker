@@ -32,11 +32,6 @@ class UserService(
             return userRepository.existsByEmailOrPhoneNumber(userDto.email, userDto.phoneNumber)
       }
 
-      fun getAllUsersInLocationMap(): Map<String, List<UserDto>> {
-            return userRepository.findAll().groupBy { "${it.lat},${it.lon}" }
-                  .mapValues { entry -> entry.value.map { userMapper.toDto(it) } }
-      }
-
       fun isAfterSunsetAndClearSky(userDto: UserDto): Boolean {
             val url = "https://api.open-meteo.com/v1/forecast?latitude=${userDto.lat}&longitude=${userDto.lon}&current=cloud_cover&daily=sunset"
             val response = jsonService.fetch(url)
@@ -66,4 +61,6 @@ class UserService(
                   LocalDateTime.now().minusHours(12).isBefore(it)
             } ?: false
       }
+
+
 }
