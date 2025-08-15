@@ -1,10 +1,9 @@
 package com.example.auroratracker.service
 
-import com.example.auroratracker.dto.NOAAResponseDto
-import com.example.auroratracker.dto.UserDto
+import com.example.auroratracker.Thresholds
+import com.example.auroratracker.dto.AuroraPointsDto
+import com.example.auroratracker.dto.KpIndexDto
 import io.github.cdimascio.dotenv.Dotenv
-import jakarta.annotation.PostConstruct
-import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
 import kotlin.math.atan2
 import kotlin.math.cos
@@ -17,28 +16,16 @@ class TrackingService(
       private val userService: UserService,
       private val emailService: EmailService
 ) {
-      var userMap = mutableMapOf<String, List<UserDto>>()
       private val dotenv = Dotenv.configure().ignoreIfMissing().load()
       private var auroraPoints: List<List<Int>> = mutableListOf()
       private val distanceLimit = 10.0
 
-      @PostConstruct
-      fun init() {
-            loadUsers()
-      }
-
-      @Scheduled(fixedRate = 60000 * 15)
-      fun loadUsers() {
-            userMap = userService.getAllUsersInLocationMap().toMutableMap()
-      }
-
-      fun isUserCloseEnoughToAuroraPoint(
+      fun distanceBetweenUsersAndAuroraPoint(
             auroraLat: Double,
             auroraLon: Double,
             userLat: Double,
-            userLon: Double,
-            limit: Double
-      ): Boolean {
+            userLon: Double
+      ): Double {
             val earthRadius = 6371.0
             val dLat = Math.toRadians(userLat - auroraLat)
             val dLon = Math.toRadians(userLon - auroraLon)
@@ -48,34 +35,73 @@ class TrackingService(
                         sin(dLon / 2) * sin(dLon / 2)
 
             val c = 2 * atan2(sqrt(a), sqrt(1 - a))
-            val distance = earthRadius * c
-            return distance <= limit
+            return earthRadius * c * 1000
       }
 
       fun getAuroraPoints(): List<List<Int>> {
             val url = dotenv.get("API_URL_NOAA") ?: ""
             val jsonResponse = jsonService.fetch(url)
-            val list = jsonService.parse<NOAAResponseDto>(jsonResponse)
+            val list = jsonService.parse<AuroraPointsDto>(jsonResponse)
             return list.coordinates!!.filter { it[2] >= 80 }
       }
 
-      @Scheduled(fixedRate = 60000 * 60)
-      suspend fun sendNotificationToUsers() {
-            auroraPoints = getAuroraPoints()
-            userMap.forEach { (location, users) ->
-                  val (lat, lon) = location.split(",").map { it.toDouble() }
-                  users.forEach { user ->
-                        if (
-                              isUserCloseEnoughToAuroraPoint(lat, lon, user.lat, user.lon, distanceLimit) &&
-                              userService.isAfterSunsetAndClearSky(user) &&
-                              !userService.hasUserReceivedNotificationRecently(user)
-                        ) {
-                              val success = emailService.sendEmailAsync(user.email ?: "").await()
-                              if( success ) {
-                                    userService.updateLastNotificationTime(user)
-                              }
-                        }
-                  }
+      fun getKpIndex(): Int? {
+            val url = dotenv.get("API_URL_KP") ?: ""
+            val jsonResponse = jsonService.fetch(url)
+            val list = jsonService.parse<List<KpIndexDto>>(jsonResponse)
+            return list.lastOrNull()?.kpIndex ?:  0
+      }
+
+//      @Scheduled(fixedRate = 60000 * 60)
+//      suspend fun sendNotificationToUsers() {
+//            val points = getAuroraPoints()
+//            val users = userService.getAllUsers()
+//
+//            for (user in users) {
+//                  val isClose = points.any { p ->
+//                        val auroraLon = p[0].toDouble()
+//                        val auroraLat = p[1].toDouble()
+//                        isUserCloseEnoughToAuroraPoint(
+//                              auroraLat, auroraLon,
+//                              user.lat, user.lon,
+//                              distanceLimit
+//                        )
+//                  }
+//                  if (!isClose) continue
+//                  if (userService.hasUserReceivedNotificationRecently(user)) continue
+//                  if (!userService.isAfterSunsetAndClearSky(user)) continue
+//
+//                  val success = emailService.sendEmailAsync(user.email ?: "").await()
+//                  if (success) {
+//                        user.lastNotificationTime = LocalDateTime.now()
+//                        userService.updateLastNotificationTime(user)
+//                  }
+//            }
+//      }
+
+      fun auroraElevation(userLat: Double, userLon: Double, auroraLat: Double, auroraLon: Double, auroraHeight: Double = 150000.0): Double {
+            val distance = distanceBetweenUsersAndAuroraPoint(userLat, userLon, auroraLat, auroraLon)
+            return Math.toDegrees(Math.atan(auroraHeight / distance)) // elevation in degrees
+      }
+
+      fun getThresholdsForLatitude(lat: Double): Thresholds {
+            return when {
+                  lat >= 65 -> Thresholds(20, 2, 300_000.0)    // meters
+                  lat >= 60 -> Thresholds(40, 4, 500_000.0)
+                  else -> Thresholds(60, 5, 600_000.0)
             }
       }
+
+      fun shouldNotifyUser(userLat: Double, userLon: Double, auroraLat: Double, auroraLon: Double, probability: Int, kp: Int): Boolean {
+            val thresholds = getThresholdsForLatitude(userLat)
+            val distance = distanceBetweenUsersAndAuroraPoint(userLat, userLon, auroraLat, auroraLon)
+            val elevation = auroraElevation(userLat, userLon, auroraLat, auroraLon)
+
+            return probability >= thresholds.minProbability &&
+                        kp >= thresholds.minKp &&
+                        distance <= thresholds.maxDistance &&
+                        elevation >= 15 // degrees
+      }
+
+
 }
