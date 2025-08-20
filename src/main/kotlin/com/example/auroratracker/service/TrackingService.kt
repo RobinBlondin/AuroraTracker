@@ -103,5 +103,14 @@ class TrackingService(
                         elevation >= 15 // degrees
       }
 
+      fun minProbForLat(lat: Double, kp: Int): Int {
+            var base = when {
+                  lat >= 65 -> 20
+                  lat >= 60 -> 30
+                  else -> 40
+            }
 
+            if (kp >= 6) base -= 10
+            return base.coerceAtLeast(15)
+      }
 }
