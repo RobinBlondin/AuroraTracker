@@ -42,7 +42,7 @@ class TrackingService(
             val url = dotenv.get("API_URL_NOAA") ?: ""
             val jsonResponse = jsonService.fetch(url)
             val list = jsonService.parse<AuroraPointsDto>(jsonResponse)
-            return list.coordinates!!.filter { it[2] >= 80 }
+            return list.coordinates ?: emptyList()
       }
 
       fun getKpIndex(): Int? {
