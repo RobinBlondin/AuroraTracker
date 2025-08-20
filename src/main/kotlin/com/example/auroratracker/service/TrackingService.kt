@@ -95,12 +95,14 @@ class TrackingService(
       fun shouldNotifyUser(userLat: Double, userLon: Double, auroraLat: Double, auroraLon: Double, probability: Int, kp: Int): Boolean {
             val thresholds = getThresholdsForLatitude(userLat)
             val distance = distanceBetweenUsersAndAuroraPoint(userLat, userLon, auroraLat, auroraLon)
-            val elevation = auroraElevation(userLat, userLon, auroraLat, auroraLon)
+            if(distance > thresholds.maxDistance) return false
 
-            return probability >= thresholds.minProbability &&
-                        kp >= thresholds.minKp &&
-                        distance <= thresholds.maxDistance &&
-                        elevation >= 15 // degrees
+            val elevation = auroraElevation(userLat, userLon, auroraLat, auroraLon)
+            if (elevation < 15) return false
+
+            val minProb = minProbForLat(userLat, kp)
+
+            return probability >= minProb && kp >= thresholds.minKp
       }
 
       fun minProbForLat(lat: Double, kp: Int): Int {
