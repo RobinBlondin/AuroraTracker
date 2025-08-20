@@ -4,7 +4,10 @@ import com.example.auroratracker.Thresholds
 import com.example.auroratracker.dto.AuroraPointsDto
 import com.example.auroratracker.dto.KpIndexDto
 import io.github.cdimascio.dotenv.Dotenv
+import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
+import java.time.LocalDateTime
+import kotlin.math.atan
 import kotlin.math.atan2
 import kotlin.math.cos
 import kotlin.math.sin
@@ -17,8 +20,6 @@ class TrackingService(
       private val emailService: EmailService
 ) {
       private val dotenv = Dotenv.configure().ignoreIfMissing().load()
-      private var auroraPoints: List<List<Int>> = mutableListOf()
-      private val distanceLimit = 10.0
 
       fun distanceBetweenUsersAndAuroraPoint(
             auroraLat: Double,
@@ -52,32 +53,37 @@ class TrackingService(
             return list.lastOrNull()?.kpIndex ?:  0
       }
 
-//      @Scheduled(fixedRate = 60000 * 60)
-//      suspend fun sendNotificationToUsers() {
-//            val points = getAuroraPoints()
-//            val users = userService.getAllUsers()
-//
-//            for (user in users) {
-//                  val isClose = points.any { p ->
-//                        val auroraLon = p[0].toDouble()
-//                        val auroraLat = p[1].toDouble()
-//                        isUserCloseEnoughToAuroraPoint(
-//                              auroraLat, auroraLon,
-//                              user.lat, user.lon,
-//                              distanceLimit
-//                        )
-//                  }
-//                  if (!isClose) continue
-//                  if (userService.hasUserReceivedNotificationRecently(user)) continue
-//                  if (!userService.isAfterSunsetAndClearSky(user)) continue
-//
-//                  val success = emailService.sendEmailAsync(user.email ?: "").await()
-//                  if (success) {
-//                        user.lastNotificationTime = LocalDateTime.now()
-//                        userService.updateLastNotificationTime(user)
-//                  }
-//            }
-//      }
+      @Scheduled(fixedDelay = 2700000)
+      suspend fun checkAuroraForUsers() {
+            val points = getAuroraPoints()
+            val kp = getKpIndex() ?: return
+            val users = userService.getAllUsers()
+
+            for (user in users) {
+                  if (!userService.isAfterSunsetAndClearSky(user)) continue
+                  if (userService.hasUserReceivedNotificationRecently(user)) continue
+
+                  val nearby = points.filter { p ->
+                        distanceBetweenUsersAndAuroraPoint(user.lat, user.lon, p[1].toDouble(), p[0].toDouble()) <= 1_200_000.0
+                  }
+
+                  val shouldNotify = nearby.any { point ->
+                        val auroraLon = point[0].toDouble()
+                        val auroraLat = point[1].toDouble()
+                        val probability = point[2]
+
+                        shouldNotifyUser(user.lat, user.lon, auroraLat, auroraLon, probability, kp)
+                  }
+
+                  if (shouldNotify) {
+                        val success = emailService.sendEmailAsync(user.email ?: "").await()
+                        if (success) {
+                              user.lastNotificationTime = LocalDateTime.now()
+                              userService.updateLastNotificationTime(user)
+                        }
+                  }
+            }
+      }
 
       fun auroraElevation(userLat: Double, userLon: Double, auroraLat: Double, auroraLon: Double, auroraHeight: Double = 150000.0): Double {
             val distance = distanceBetweenUsersAndAuroraPoint(userLat, userLon, auroraLat, auroraLon)
