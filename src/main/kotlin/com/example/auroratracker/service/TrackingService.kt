@@ -81,14 +81,14 @@ class TrackingService(
 
       fun auroraElevation(userLat: Double, userLon: Double, auroraLat: Double, auroraLon: Double, auroraHeight: Double = 150000.0): Double {
             val distance = distanceBetweenUsersAndAuroraPoint(userLat, userLon, auroraLat, auroraLon)
-            return Math.toDegrees(Math.atan(auroraHeight / distance)) // elevation in degrees
+            return Math.toDegrees(atan(auroraHeight / distance))
       }
 
       fun getThresholdsForLatitude(lat: Double): Thresholds {
             return when {
-                  lat >= 65 -> Thresholds(20, 2, 300_000.0)    // meters
-                  lat >= 60 -> Thresholds(40, 4, 500_000.0)
-                  else -> Thresholds(60, 5, 600_000.0)
+                  lat >= 65 -> Thresholds( 2, 300_000.0)
+                  lat >= 60 -> Thresholds(4, 500_000.0)
+                  else -> Thresholds(5, 600_000.0)
             }
       }
 
