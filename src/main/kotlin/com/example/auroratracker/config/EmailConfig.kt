@@ -20,10 +20,10 @@ class EmailConfig{
             mailSender.password = dotenv?.get("MAIL_PASSWORD") ?: ""
 
             val props = mailSender.javaMailProperties
-            props.put("mail.transport.protocol", "smtp")
-            props.put("mail.smtp.auth", "true")
-            props.put("mail.smtp.starttls.enable", "true")
-            props.put("mail.debug", "true")
+            props["mail.transport.protocol"] = "smtp"
+            props["mail.smtp.auth"] = "true"
+            props["mail.smtp.starttls.enable"] = "true"
+            props["mail.debug"] = "true"
 
             return mailSender
       }
