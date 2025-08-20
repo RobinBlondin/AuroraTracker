@@ -40,7 +40,6 @@ class UserService(
             val currentTime = LocalDateTime.parse(weatherResponse.current?.time ?: return false)
             val sunsetTime = LocalDateTime.parse(weatherResponse.daily?.sunset?.firstOrNull() ?: return false)
 
-
             val isAfterSunset = currentTime.isAfter(sunsetTime)
             println("isAfterSunset: $isAfterSunset")
             val isClearSky = (weatherResponse.current.cloudCover ?: Double.MAX_VALUE) < 20.0
