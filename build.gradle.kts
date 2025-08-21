@@ -5,6 +5,7 @@ plugins {
       id("org.springframework.boot") version "3.5.4"
       id("io.spring.dependency-management") version "1.1.7"
       kotlin("plugin.jpa") version "2.2.0"
+      kotlin("kapt") version "2.2.0"
 }
 
 group = "com.example"
@@ -26,6 +27,7 @@ dependencies {
       implementation("org.springframework.boot:spring-boot-starter-web")
       implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
       implementation("org.mapstruct:mapstruct:1.6.3")
+      kapt("org.mapstruct:mapstruct-processor:1.6.3")
       implementation("org.springframework.boot:spring-boot-starter-mail:3.5.4")
       implementation("org.springframework:spring-context-support:6.2.9")
       implementation("io.github.cdimascio:dotenv-java:3.2.0")
