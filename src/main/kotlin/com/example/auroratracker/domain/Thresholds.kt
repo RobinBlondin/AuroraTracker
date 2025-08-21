@@ -1,4 +1,4 @@
-package com.example.auroratracker
+package com.example.auroratracker.domain
 
 /**
  * Data class representing the thresholds for aurora tracking.
@@ -7,4 +7,3 @@ package com.example.auroratracker
  * @property maxDistance Maximum distance from the aurora point in meters.
  */
 data class Thresholds(val minKp: Int, val maxDistance: Double)
-
