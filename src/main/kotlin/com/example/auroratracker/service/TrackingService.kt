@@ -1,12 +1,15 @@
 package com.example.auroratracker.service
 
-import com.example.auroratracker.Thresholds
+import com.example.auroratracker.domain.Thresholds
 import com.example.auroratracker.dto.AuroraPointsDto
 import com.example.auroratracker.dto.KpIndexDto
 import io.github.cdimascio.dotenv.Dotenv
+import kotlinx.coroutines.runBlocking
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
+import java.time.ZoneOffset
+import java.time.ZonedDateTime
 import kotlin.math.atan
 import kotlin.math.atan2
 import kotlin.math.cos
@@ -54,9 +57,9 @@ class TrackingService(
       }
 
       @Scheduled(fixedDelay = 2700000)
-      suspend fun checkAuroraForUsers() {
+       fun checkAuroraForUsers() = runBlocking {
             val points = getAuroraPoints()
-            val kp = getKpIndex() ?: return
+            val kp = getKpIndex() ?: return@runBlocking
             val users = userService.getAllUsers()
 
             for (user in users) {
@@ -78,7 +81,7 @@ class TrackingService(
                   if (shouldNotify) {
                         val success = emailService.sendEmailAsync(user.email ?: "").await()
                         if (success) {
-                              user.lastNotificationTime = LocalDateTime.now()
+                              user.lastNotificationTime = ZonedDateTime.now(ZoneOffset.UTC)
                               userService.updateLastNotificationTime(user)
                         }
                   }
