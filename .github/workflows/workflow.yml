@@ -19,7 +19,7 @@ jobs:
         run: ./gradlew bootJar
 
       - name: Copy the JAR file
-        run: cp build/libs/AuroraTracker-0.0.1-SNAPSHOT-plain.jar app.jar
+        run: cp build/libs/AuroraTracker-0.0.1-SNAPSHOT.jar app.jar
 
       - name: Build the Docker image
         run: docker build . --file Dockerfile -t robinblondin/auroratracker:latest
