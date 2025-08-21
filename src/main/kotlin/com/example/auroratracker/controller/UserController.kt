@@ -4,18 +4,13 @@ import com.example.auroratracker.dto.UserDto
 import com.example.auroratracker.service.UserService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/api/users")
-class UserController {
-
-      private lateinit var userService: UserService
-
+class UserController(
+      private val userService: UserService
+) {
       @GetMapping("all")
       fun getAllUsers(): ResponseEntity<List<UserDto>> = ResponseEntity.ok(userService.getAllUsers())
 
@@ -26,7 +21,7 @@ class UserController {
       }
 
       @PostMapping("save")
-      fun saveUser(userDto: UserDto): ResponseEntity<UserDto> {
+      fun saveUser(@RequestBody  userDto: UserDto): ResponseEntity<UserDto> {
             if(!checkValidRequestBody(userDto)) {
                   return ResponseEntity.badRequest().body(null)
             }
@@ -40,16 +35,17 @@ class UserController {
 
       @PostMapping("delete/{id}")
       fun deleteUserById(@PathVariable id: Long): ResponseEntity<String> {
-            return try {
-                  userService.deleteUserById(id)
+
+            val deleted = userService.deleteUserById(id)
+
+            return if (deleted) {
                   ResponseEntity.ok("User with ID $id deleted successfully.")
-            } catch (e: Exception) {
+            } else {
                   ResponseEntity.notFound().build()
             }
       }
 
       private fun checkValidRequestBody(userDto: UserDto): Boolean {
-            return userDto.name != null && userDto.email != null && userDto.phoneNumber != null &&
-                   userDto.lon != null && userDto.lat != null
+            return userDto.name != null && userDto.email != null && userDto.phoneNumber != null
       }
 }
