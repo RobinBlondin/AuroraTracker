@@ -1,6 +1,6 @@
 package com.example.auroratracker.dto
 
-import java.time.LocalDateTime
+import java.time.ZonedDateTime
 
 class UserDto(
       val id: Long? = null,
@@ -9,5 +9,5 @@ class UserDto(
       val phoneNumber: String? = null,
       val lon: Double,
       val lat: Double,
-      var lastNotificationTime: LocalDateTime? = null
+      var lastNotificationTime: ZonedDateTime? = null
 )
