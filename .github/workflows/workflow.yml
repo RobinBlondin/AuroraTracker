@@ -33,6 +33,7 @@ jobs:
       - name: Push the docker image
         run: docker push robinblondin/auroratracker:latest
 
+
       - name: Call deploy hook
         env:
           WEBHOOK_SECRET: ${{ secrets.WEBHOOK_SECRET }}
