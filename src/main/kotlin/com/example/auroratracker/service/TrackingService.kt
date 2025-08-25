@@ -7,14 +7,9 @@ import io.github.cdimascio.dotenv.Dotenv
 import kotlinx.coroutines.runBlocking
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
-import java.time.LocalDateTime
 import java.time.ZoneOffset
 import java.time.ZonedDateTime
-import kotlin.math.atan
-import kotlin.math.atan2
-import kotlin.math.cos
-import kotlin.math.sin
-import kotlin.math.sqrt
+import kotlin.math.*
 
 @Service
 class TrackingService(
@@ -42,23 +37,29 @@ class TrackingService(
             return earthRadius * c * 1000
       }
 
-      fun getAuroraPoints(): List<List<Int>> {
+      fun getAuroraPoints(): AuroraPointsDto {
             val url = dotenv.get("API_URL_NOAA") ?: ""
-            val jsonResponse = jsonService.fetch(url)
-            val list = jsonService.parse<AuroraPointsDto>(jsonResponse)
-            return list.coordinates ?: emptyList()
+            val response = jsonService.fetchAndParse<AuroraPointsDto>(url)
+            return response.getOrElse {
+                  println("Failed to fetch or parse aurora points: ${it.message}")
+                  AuroraPointsDto()
+            }
       }
 
       fun getKpIndex(): Int? {
             val url = dotenv.get("API_URL_KP") ?: ""
-            val jsonResponse = jsonService.fetch(url)
-            val list = jsonService.parse<List<KpIndexDto>>(jsonResponse)
-            return list.lastOrNull()?.kpIndex ?:  0
+            val result = jsonService.fetchAndParse<List<KpIndexDto>>(url)
+            return result.getOrElse {
+                  println("Failed to fetch or parse Kp index: ${it.message}")
+                  emptyList()
+            }.lastOrNull()?.kpIndex
       }
 
       @Scheduled(fixedDelay = 2700000)
        fun checkAuroraForUsers() = runBlocking {
             val points = getAuroraPoints()
+            if (points.coordinates.isEmpty()) return@runBlocking
+
             val kp = getKpIndex() ?: return@runBlocking
             val users = userService.getAllUsers()
 
@@ -66,7 +67,7 @@ class TrackingService(
                   if (!userService.isAfterSunsetAndClearSky(user)) continue
                   if (userService.hasUserReceivedNotificationRecently(user)) continue
 
-                  val nearby = points.filter { p ->
+                  val nearby = points.coordinates.filter { p ->
                         distanceBetweenUsersAndAuroraPoint(user.lat, user.lon, p[1].toDouble(), p[0].toDouble()) <= 1_200_000.0
                   }
 
