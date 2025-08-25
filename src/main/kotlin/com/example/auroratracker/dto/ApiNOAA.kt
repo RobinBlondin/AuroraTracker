@@ -5,7 +5,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 class AuroraPointsDto {
-      var coordinates: List<List<Int>>? = null
+      val coordinates: List<List<Int>> = emptyList()
 }
 
 @Serializable
