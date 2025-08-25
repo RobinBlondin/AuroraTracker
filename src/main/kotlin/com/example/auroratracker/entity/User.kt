@@ -8,10 +8,10 @@ import java.time.ZonedDateTime
 @Entity
 @Table(name = "users")
 class User (
-      val name: String? = null,
-      val email: String? = null,
-      val phoneNumber: String? = null,
-      val lon: Double? = null,
-      val lat: Double? = null,
+      var name: String? = null,
+      var email: String? = null,
+      var phoneNumber: String? = null,
+      var lon: Double? = null,
+      var lat: Double? = null,
       var lastNotificationTime: ZonedDateTime? = null,
 ): BaseEntity()
