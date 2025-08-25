@@ -135,7 +135,6 @@ Run tests:
 - Implement use of queues instead of courotines, like Kafka.
 - Add authentication/authorization to API
 - Add SMS/Push notification channels
-- Add robust error handling for external API failures
 - Build mobile app for IOS and Android that uses push notifications instead of email.
 
 ## Troubleshooting
