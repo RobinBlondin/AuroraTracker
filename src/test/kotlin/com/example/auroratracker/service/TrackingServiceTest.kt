@@ -37,7 +37,7 @@ class TrackingServiceTest {
                   coordinates = listOf(listOf(10, 60, 60))
             }
 
-            every { trackingService.getAuroraPoints() } returns auroraDto.coordinates!!
+            every { trackingService.getAuroraPoints() } returns auroraDto
             every { trackingService.getKpIndex() } returns 5
             coEvery { emailService.sendEmailAsync("test@example.com") } returns CompletableDeferred(true)
 
@@ -73,7 +73,7 @@ class TrackingServiceTest {
                   coordinates = listOf(listOf(20, 60, 60))
             }
 
-            every { trackingService.getAuroraPoints() } returns auroraDto.coordinates!!
+            every { trackingService.getAuroraPoints() } returns auroraDto
             every { trackingService.getKpIndex() } returns 5
             coEvery { emailService.sendEmailAsync("test@example.com") } returns CompletableDeferred(true)
 
@@ -98,7 +98,7 @@ class TrackingServiceTest {
                   coordinates = listOf(listOf(10, 60, 60))
             }
 
-            every { trackingService.getAuroraPoints() } returns auroraDto.coordinates!!
+            every { trackingService.getAuroraPoints() } returns auroraDto
             every { trackingService.getKpIndex() } returns 5
             coEvery { emailService.sendEmailAsync("test@example.com") } returns CompletableDeferred(true)
 
@@ -123,7 +123,7 @@ class TrackingServiceTest {
                   coordinates = listOf(listOf(10, 60, 60))
             }
 
-            every { trackingService.getAuroraPoints() } returns auroraDto.coordinates!!
+            every { trackingService.getAuroraPoints() } returns auroraDto
             every { trackingService.getKpIndex() } returns 5
             coEvery { emailService.sendEmailAsync("test@example.com") } returns CompletableDeferred(true)
 
@@ -148,7 +148,7 @@ class TrackingServiceTest {
                   coordinates = listOf(listOf(10, 60, 60))
             }
 
-            every { trackingService.getAuroraPoints() } returns auroraDto.coordinates!!
+            every { trackingService.getAuroraPoints() } returns auroraDto
             every { trackingService.getKpIndex() } returns 1
             coEvery { emailService.sendEmailAsync("test@example.com") } returns CompletableDeferred(true)
 
@@ -173,7 +173,7 @@ class TrackingServiceTest {
                   coordinates = listOf(listOf(10, 60, 1))
             }
 
-            every { trackingService.getAuroraPoints() } returns auroraDto.coordinates!!
+            every { trackingService.getAuroraPoints() } returns auroraDto
             every { trackingService.getKpIndex() } returns 5
             coEvery { emailService.sendEmailAsync("test@example.com") } returns CompletableDeferred(true)
 
