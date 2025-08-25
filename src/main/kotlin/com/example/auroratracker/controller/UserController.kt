@@ -33,7 +33,7 @@ class UserController(
             return ResponseEntity.ok(savedUser)
       }
 
-      @PostMapping("delete/{id}")
+      @DeleteMapping("delete/{id}")
       fun deleteUserById(@PathVariable id: Long): ResponseEntity<String> {
 
             val deleted = userService.deleteUserById(id)
