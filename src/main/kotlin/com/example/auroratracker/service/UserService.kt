@@ -40,11 +40,14 @@ class UserService(
       fun isAfterSunsetAndClearSky(userDto: UserDto): Boolean {
             val url =
                   "https://api.open-meteo.com/v1/forecast?latitude=${userDto.lat}&longitude=${userDto.lon}&current=cloud_cover&daily=sunset"
-            val response = jsonService.fetch(url)
-            val weatherResponse = jsonService.parse<WeatherResponseDto>(response)
 
-            val currentTime = ZonedDateTime.parse(weatherResponse.current?.time ?: return false)
-            val sunsetTime = ZonedDateTime.parse(weatherResponse.daily?.sunset?.firstOrNull() ?: return false)
+            val weatherResponse = jsonService.fetchAndParse<WeatherResponseDto>(url).getOrElse {
+                  println("Failed to fetch or parse weather data: ${it.message}")
+                  return false
+            }
+
+            val currentTime = ZonedDateTime.parse("${weatherResponse.current?.time ?: return false}Z")
+            val sunsetTime = ZonedDateTime.parse("${weatherResponse.daily?.sunset?.firstOrNull() ?: return false}Z")
 
             val isAfterSunset = currentTime.isAfter(sunsetTime)
             val isClearSky = (weatherResponse.current.cloudCover ?: 100.0) < 20.0
