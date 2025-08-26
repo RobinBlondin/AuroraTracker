@@ -5,6 +5,7 @@ import com.example.auroratracker.dto.AuroraPointsDto
 import com.example.auroratracker.dto.KpIndexDto
 import io.github.cdimascio.dotenv.Dotenv
 import kotlinx.coroutines.runBlocking
+import org.slf4j.LoggerFactory
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
 import java.time.ZoneOffset
@@ -18,6 +19,7 @@ class TrackingService(
       private val emailService: EmailService
 ) {
       private val dotenv = Dotenv.configure().ignoreIfMissing().load()
+      private val log = LoggerFactory.getLogger(this::class.java)
 
       fun distanceBetweenUsersAndAuroraPoint(
             auroraLat: Double,
@@ -64,6 +66,8 @@ class TrackingService(
             val users = userService.getAllUsers()
 
             for (user in users) {
+                  log.error("Checking aurora for user ${user.id} at (${user.lat}, ${user.lon})")
+                  log.error("Current Kp index: $kp")
                   if (!userService.isAfterSunsetAndClearSky(user)) continue
                   if (userService.hasUserReceivedNotificationRecently(user)) continue
 
