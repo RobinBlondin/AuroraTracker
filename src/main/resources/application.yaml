@@ -11,3 +11,14 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
+
+logging:
+  file:
+    name: logs/auroratracker.log
+  level:
+    com:
+      example: ERROR
+    org:
+        springframework: WARN
+    root: WARN
+
