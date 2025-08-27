@@ -66,8 +66,8 @@ class TrackingService(
             val users = userService.getAllUsers()
 
             for (user in users) {
-                  log.error("Checking aurora for user ${user.id} at (${user.lat}, ${user.lon})")
-                  log.error("Current Kp index: $kp")
+                  log.error("User: ${user.name} at (${user.lat.toString().take(5)}, ${user.lon.toString().take(5)})")
+                  log.error("KpIndex: $kp")
                   if (!userService.isAfterSunsetAndClearSky(user)) continue
                   if (userService.hasUserReceivedNotificationRecently(user)) continue
 
