@@ -4,9 +4,27 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-class AuroraPointsDto {
-      var coordinates: List<List<Int>> = emptyList()
+class AuroraBelt {
+      var coordinates: List<List<Double>> = emptyList()
+
+      fun convertToAuroraPoints(): List<AuroraPoint> {
+            return coordinates.map { cord ->
+                  AuroraPoint(
+                        lon = cord[0],
+                        lat = cord[1],
+                        probability = cord[2]
+                  )
+            }
+      }
 }
+
+@Serializable
+data class AuroraPoint(
+      var lon: Double,
+      var lat: Double,
+      var probability: Double
+)
+
 
 @Serializable
 class KpIndexDto {
