@@ -1,6 +1,6 @@
 package com.example.auroratracker.service
 
-import com.example.auroratracker.dto.AuroraPointsDto
+import com.example.auroratracker.dto.AuroraPoint
 import com.example.auroratracker.dto.UserDto
 import io.mockk.*
 import kotlinx.coroutines.CompletableDeferred
@@ -25,6 +25,9 @@ class TrackingServiceTest {
             lastNotificationTime = null
       )
 
+      val auroraPoints = listOf(AuroraPoint(20.0, 60.0, 60.0))
+
+
       @Test
       fun checkAuroraForUsers_userNearAuroraPoint_sendsEmailAndUpdatesTimestamp() = runBlocking {
 
@@ -33,11 +36,8 @@ class TrackingServiceTest {
             every { userService.hasUserReceivedNotificationRecently(userInRange) } returns false
             every { userService.updateLastNotificationTime(any()) } answers { firstArg() }
 
-            val auroraDto = AuroraPointsDto().apply {
-                  coordinates = listOf(listOf(10, 60, 60))
-            }
 
-            every { trackingService.getAuroraPoints() } returns auroraDto
+            every { trackingService.getAuroraPoints() } returns auroraPoints
             every { trackingService.getKpIndex() } returns 5
             coEvery { emailService.sendEmailAsync("test@example.com") } returns CompletableDeferred(true)
 
@@ -68,12 +68,7 @@ class TrackingServiceTest {
             every { userService.isAfterSunsetAndClearSky(userNotInRange) } returns true
             every { userService.hasUserReceivedNotificationRecently(userNotInRange) } returns false
             every { userService.updateLastNotificationTime(any()) } answers { firstArg() }
-
-            val auroraDto = AuroraPointsDto().apply {
-                  coordinates = listOf(listOf(20, 60, 60))
-            }
-
-            every { trackingService.getAuroraPoints() } returns auroraDto
+            every { trackingService.getAuroraPoints() } returns auroraPoints
             every { trackingService.getKpIndex() } returns 5
             coEvery { emailService.sendEmailAsync("test@example.com") } returns CompletableDeferred(true)
 
@@ -93,12 +88,7 @@ class TrackingServiceTest {
             every { userService.isAfterSunsetAndClearSky(userInRange) } returns false
             every { userService.hasUserReceivedNotificationRecently(userInRange) } returns false
             every { userService.updateLastNotificationTime(any()) } answers { firstArg() }
-
-            val auroraDto = AuroraPointsDto().apply {
-                  coordinates = listOf(listOf(10, 60, 60))
-            }
-
-            every { trackingService.getAuroraPoints() } returns auroraDto
+            every { trackingService.getAuroraPoints() } returns auroraPoints
             every { trackingService.getKpIndex() } returns 5
             coEvery { emailService.sendEmailAsync("test@example.com") } returns CompletableDeferred(true)
 
@@ -118,12 +108,7 @@ class TrackingServiceTest {
             every { userService.isAfterSunsetAndClearSky(userInRange) } returns true
             every { userService.hasUserReceivedNotificationRecently(userInRange) } returns true
             every { userService.updateLastNotificationTime(any()) } answers { firstArg() }
-
-            val auroraDto = AuroraPointsDto().apply {
-                  coordinates = listOf(listOf(10, 60, 60))
-            }
-
-            every { trackingService.getAuroraPoints() } returns auroraDto
+            every { trackingService.getAuroraPoints() } returns auroraPoints
             every { trackingService.getKpIndex() } returns 5
             coEvery { emailService.sendEmailAsync("test@example.com") } returns CompletableDeferred(true)
 
@@ -143,12 +128,7 @@ class TrackingServiceTest {
             every { userService.isAfterSunsetAndClearSky(userInRange) } returns true
             every { userService.hasUserReceivedNotificationRecently(userInRange) } returns false
             every { userService.updateLastNotificationTime(any()) } answers { firstArg() }
-
-            val auroraDto = AuroraPointsDto().apply {
-                  coordinates = listOf(listOf(10, 60, 60))
-            }
-
-            every { trackingService.getAuroraPoints() } returns auroraDto
+            every { trackingService.getAuroraPoints() } returns auroraPoints
             every { trackingService.getKpIndex() } returns 1
             coEvery { emailService.sendEmailAsync("test@example.com") } returns CompletableDeferred(true)
 
@@ -169,11 +149,9 @@ class TrackingServiceTest {
             every { userService.hasUserReceivedNotificationRecently(userInRange) } returns false
             every { userService.updateLastNotificationTime(any()) } answers { firstArg() }
 
-            val auroraDto = AuroraPointsDto().apply {
-                  coordinates = listOf(listOf(10, 60, 1))
-            }
+            val auroraPoints = listOf(AuroraPoint(20.0, 60.0, 1.0))
 
-            every { trackingService.getAuroraPoints() } returns auroraDto
+            every { trackingService.getAuroraPoints() } returns auroraPoints
             every { trackingService.getKpIndex() } returns 5
             coEvery { emailService.sendEmailAsync("test@example.com") } returns CompletableDeferred(true)
 

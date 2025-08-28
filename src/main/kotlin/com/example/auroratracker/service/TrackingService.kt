@@ -1,7 +1,8 @@
 package com.example.auroratracker.service
 
 import com.example.auroratracker.domain.Thresholds
-import com.example.auroratracker.dto.AuroraPointsDto
+import com.example.auroratracker.dto.AuroraBelt
+import com.example.auroratracker.dto.AuroraPoint
 import com.example.auroratracker.dto.KpIndexDto
 import io.github.cdimascio.dotenv.Dotenv
 import kotlinx.coroutines.runBlocking
@@ -39,13 +40,14 @@ class TrackingService(
             return earthRadius * c * 1000
       }
 
-      fun getAuroraPoints(): AuroraPointsDto {
+      fun getAuroraPoints(): List<AuroraPoint> {
             val url = dotenv.get("API_URL_NOAA") ?: ""
-            val response = jsonService.fetchAndParse<AuroraPointsDto>(url)
-            return response.getOrElse {
+            val response = jsonService.fetchAndParse<AuroraBelt>(url)
+            val auroraBelt = response.getOrElse {
                   println("Failed to fetch or parse aurora points: ${it.message}")
-                  AuroraPointsDto()
+                  AuroraBelt()
             }
+            return auroraBelt.convertToAuroraPoints()
       }
 
       fun getKpIndex(): Int? {
@@ -57,10 +59,10 @@ class TrackingService(
             }.lastOrNull()?.kpIndex
       }
 
-      @Scheduled(fixedDelay = 2700000)
+      @Scheduled(fixedDelay = 1800000)
        fun checkAuroraForUsers() = runBlocking {
             val points = getAuroraPoints()
-            if (points.coordinates.isEmpty()) return@runBlocking
+            if (points.isEmpty()) return@runBlocking
 
             val kp = getKpIndex() ?: return@runBlocking
             val users = userService.getAllUsers()
@@ -71,14 +73,14 @@ class TrackingService(
                   if (!userService.isAfterSunsetAndClearSky(user)) continue
                   if (userService.hasUserReceivedNotificationRecently(user)) continue
 
-                  val nearby = points.coordinates.filter { p ->
-                        distanceBetweenUsersAndAuroraPoint(user.lat, user.lon, p[1].toDouble(), p[0].toDouble()) <= 1_200_000.0
+                  val nearby = points.filter { p ->
+                        distanceBetweenUsersAndAuroraPoint(user.lat, user.lon, p.lat , p.lon) <= 1_200_000.0
                   }
 
                   val shouldNotify = nearby.any { point ->
-                        val auroraLon = point[0].toDouble()
-                        val auroraLat = point[1].toDouble()
-                        val probability = point[2]
+                        val auroraLon = point.lon
+                        val auroraLat = point.lat
+                        val probability = point.probability
 
                         shouldNotifyUser(user.lat, user.lon, auroraLat, auroraLon, probability, kp)
                   }
@@ -106,7 +108,7 @@ class TrackingService(
             }
       }
 
-      fun shouldNotifyUser(userLat: Double, userLon: Double, auroraLat: Double, auroraLon: Double, probability: Int, kp: Int): Boolean {
+      fun shouldNotifyUser(userLat: Double, userLon: Double, auroraLat: Double, auroraLon: Double, probability: Double, kp: Int): Boolean {
             val thresholds = getThresholdsForLatitude(userLat)
             val distance = distanceBetweenUsersAndAuroraPoint(userLat, userLon, auroraLat, auroraLon)
             if(distance > thresholds.maxDistance) return false
