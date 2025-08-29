@@ -52,11 +52,19 @@ class TrackingService(
 
       fun getKpIndex(): Int? {
             val url = dotenv.get("API_URL_KP") ?: ""
-            val result = jsonService.fetchAndParse<List<KpIndexDto>>(url)
-            return result.getOrElse {
+            val response = jsonService.fetchAndParse<List<KpIndexDto>>(url)
+            val result = response.getOrElse {
                   println("Failed to fetch or parse Kp index: ${it.message}")
                   emptyList()
-            }.lastOrNull()?.kpIndex
+            }
+
+            if (result.isEmpty()) {
+                  return null
+            }
+
+            val indexesOfLastHour = result.takeLast(60).mapNotNull { it.kpIndex }
+
+            return indexesOfLastHour.maxOrNull()
       }
 
       @Scheduled(fixedDelay = 1800000)
