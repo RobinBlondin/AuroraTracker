@@ -37,10 +37,11 @@ jobs:
       - name: Call deploy hook
         env:
           WEBHOOK_SECRET: ${{ secrets.WEBHOOK_SECRET }}
+          DEPLOY_URL: ${{ secrets.DEPLOY_URL }}
         run: |
           payload='{"deploy":"start"}'
           sig=$(echo -n $payload | openssl dgst -sha256 -hmac "$WEBHOOK_SECRET" | sed 's/^.* //')
-          curl -X POST http://155.4.55.166:8000/deploy \
+          curl -X POST $DEPLOY_URL \
             -H "X-Hub-Signature-256: sha256=$sig" \
             -H "Content-Type: application/json" \
             -d "$payload"
