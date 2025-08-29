@@ -108,35 +108,38 @@ class TrackingService(
             return Math.toDegrees(atan(auroraHeight / distance))
       }
 
-      fun getThresholdsForLatitude(lat: Double): Thresholds {
-            return when {
-                  lat >= 65 -> Thresholds( 2, 300_000.0)
-                  lat >= 60 -> Thresholds(4, 500_000.0)
-                  else -> Thresholds(5, 600_000.0)
+      fun getThresholdsForLatitude(lat: Double, kp: Int): Thresholds {
+            val minKp = when {
+                  lat >= 65 -> 2
+                  lat >= 60 -> 4
+                  else -> 5
             }
+
+            val maxDistance = when {
+                  lat >= 65 -> 300_000.0
+                  lat >= 60 -> 500_000.0
+                  else -> 600_000.0
+            }
+
+            val baseProbability = when {
+                  lat >= 65 -> 20
+                  lat >= 60 -> 30
+                  else -> 40
+            }
+
+            val minProbability = (baseProbability - if (kp >= 6) 10 else 0).coerceAtLeast(15)
+
+            return Thresholds(minKp = minKp, maxDistance = maxDistance, minProbability = minProbability)
       }
 
       fun shouldNotifyUser(userLat: Double, userLon: Double, auroraLat: Double, auroraLon: Double, probability: Double, kp: Int): Boolean {
-            val thresholds = getThresholdsForLatitude(userLat)
+            val thresholds = getThresholdsForLatitude(userLat, kp)
             val distance = distanceBetweenUsersAndAuroraPoint(userLat, userLon, auroraLat, auroraLon)
             if(distance > thresholds.maxDistance) return false
 
             val elevation = auroraElevation(userLat, userLon, auroraLat, auroraLon)
             if (elevation < 15) return false
 
-            val minProb = minProbForLat(userLat, kp)
-
-            return probability >= minProb && kp >= thresholds.minKp
-      }
-
-      fun minProbForLat(lat: Double, kp: Int): Int {
-            var base = when {
-                  lat >= 65 -> 20
-                  lat >= 60 -> 30
-                  else -> 40
-            }
-
-            if (kp >= 6) base -= 10
-            return base.coerceAtLeast(15)
+            return probability >= thresholds.minProbability && kp >= thresholds.minKp
       }
 }
