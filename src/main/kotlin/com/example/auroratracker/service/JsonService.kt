@@ -21,7 +21,7 @@ class JsonService(
       }
 
       final inline fun <reified T> parse(json: String): T {
-            return jsonParser.decodeFromString(json)
+            return jsonParser.decodeFromString<T>(json)
       }
 
       final inline fun <reified T> fetchAndParse(url: String): Result<T> {
