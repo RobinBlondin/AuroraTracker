@@ -22,3 +22,5 @@ logging:
         springframework: WARN
     root: WARN
 
+server:
+  address: 0.0.0.0
