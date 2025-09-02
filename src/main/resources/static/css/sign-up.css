@@ -25,8 +25,9 @@
 }
 
 .logo-container {
-    height: 100%;
-    width: 300px;
+    height: 200px;
+    width: 200px;
+    overflow: visible;
 
 }
 
@@ -169,14 +170,16 @@
 
 @media (max-width: 1500px) {
     .signup-inner-container {
-        width: 60%;
+        width: 40%;
     }
 }
+
 
 @media (max-width: 1000px) {
     .header {
         align-items: center;
         justify-content: center;
+        height: 300px;
     }
 
     .signup-outer-container {
@@ -186,6 +189,12 @@
         justify-content: start;
     }
 
+    .signup-inner-container {
+        width: 60%;
+    }
+}
+
+@media (max-width: 750px) {
     .signup-inner-container {
         width: 80%;
     }
