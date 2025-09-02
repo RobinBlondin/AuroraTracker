@@ -9,6 +9,7 @@ import kotlinx.coroutines.runBlocking
 import org.slf4j.LoggerFactory
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
+import java.time.LocalDateTime
 import java.time.ZoneOffset
 import java.time.ZonedDateTime
 import kotlin.math.*
@@ -74,10 +75,9 @@ class TrackingService(
 
             val kp = getKpIndex() ?: return@runBlocking
             val users = userService.getAllUsers()
+            log.info("KpIndex: $kp at ${LocalDateTime.now().toString().split("T")[1].take(5)}")
 
             for (user in users) {
-                  log.error("User: ${user.name} at (${user.lat.toString().take(5)}, ${user.lon.toString().take(5)})")
-                  log.error("KpIndex: $kp")
                   if (!userService.isAfterSunsetAndClearSky(user)) continue
                   if (userService.hasUserReceivedNotificationRecently(user)) continue
 
@@ -94,6 +94,8 @@ class TrackingService(
                   }
 
                   if (shouldNotify) {
+                        log.info("Email sent to user: ${user.name} at (${user.lat.toString().take(5)}, ${user.lon.toString().take(5)})")
+
                         val success = emailService.sendEmailAsync(user.email ?: "").await()
                         if (success) {
                               user.lastNotificationTime = ZonedDateTime.now(ZoneOffset.UTC)
