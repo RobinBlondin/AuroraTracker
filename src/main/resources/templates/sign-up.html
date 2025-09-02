@@ -1,18 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+    <meta name="viewport" charset="UTF-8" content="width=device-width, initial-scale=1.0">
     <title>Sign Up</title>
     <link rel="stylesheet" href="/css/sign-up.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
 </head>
 <body>
     <div class="signup-outer-container">
-        <div class="alert-container">
-            <div class="error-email alert-message" th:if="${missingField == 'email'}">Invalid email input</div>
-            <div class="error-cord alert-message" th:if="${missingField == 'cord'}">Invalid coordinates input</div>
-            <div class="success alert-message" th:if="${success}">User successfully added</div>
+        <div class="header">
+            <div class="logo-container">
+                <img alt="logo" class="logo" src="/images/logo.png">
+            </div>
         </div>
+            <div class="alert-container">
+                <div class="error-email alert-message" th:if="${missingField == 'email'}">Invalid email input</div>
+                <div class="error-cord alert-message" th:if="${missingField == 'cord'}">Invalid coordinates input</div>
+                <div class="success alert-message" th:if="${success}">User successfully added</div>
+            </div>
         <div class="signup-inner-container">
             <div class="signup-header">
                 <p class="title">Register</p>
