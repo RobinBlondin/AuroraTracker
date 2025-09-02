@@ -192,6 +192,9 @@
 }
 
 @media (max-width: 500px) {
+    .header {
+        padding: 0.5em;
+    }
     .signup-outer-container {
         padding: 1em;
         overflow-y: scroll;
