@@ -39,6 +39,7 @@ class EmailService(
 
             return try {
                   mailSender.send(message)
+                  log.info("Sent email to ${user.name}")
                   true
             } catch (e: Exception) {
                   log.error("Failed to send email to ${user.email}: ${e.message}")
