@@ -2,45 +2,41 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="color-scheme" content="dark light">
+    <meta name="supported-color-schemes" content="dark light">
     <title>Aurora Alert</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #0b0f19;
-            color: #ffffff;
-            margin: 0;
-            padding: 0;
-        }
-        .container {
-            padding: 20px;
-            max-width: 600px;
-            margin: auto;
-            background-color: #131a28;
-        }
-        p {
-            line-height: 1.5;
-        }
-        .forecast {
-            background: #1c2538;
-            padding: 15px;
-            border-radius: 4px;
-            margin-top: 15px;
-        }
-    </style>
 </head>
-<body>
-<div class="container">
-    <h2>Aurora sighting predicted</h2>
-    <p>Good evening</p>
-    <p>We have detected ideal aurora conditions near your location</p>
+<body style="margin:0;padding:0;background-color:#0B0F19;font-family:Arial,sans-serif;">
 
-    <div class="forecast">
-        <p>Location: [LOCATION]</p>
-        <p>Kp index: [KP_VALUE]</p>
-        <p>Cloud cover: less than 20 percent</p>
+<div style="max-width:600px;margin:auto;padding:20px;background-color:#131A28;color:#FFFFFF;">
+    <h2 style="color:#2CB67D;margin-bottom:16px;">Aurora sighting predicted</h2>
+
+    <p style="color:#FFFFFF;line-height:1.5;margin:0 0 12px 0;">
+        Good evening,
+    </p>
+
+    <p style="color:#FFFFFF;line-height:1.5;margin:0 0 12px 0;">
+        Ideal aurora conditions has been detected near your location.
+    </p>
+
+    <div style="background-color:#1C2538;border-radius:4px;padding:15px;margin:15px 0;">
+        <p style="color:#FFFFFF;line-height:1.5;margin:0 0 8px 0;">
+            <strong>Location:</strong> [LOCATION]
+        </p>
+        <p style="color:#FFFFFF;line-height:1.5;margin:0 0 8px 0;">
+            <strong>Kp index:</strong> [KP_VALUE]
+        </p>
+        <p style="color:#FFFFFF;line-height:1.5;margin:0;">
+            <strong>Cloud cover:</strong> less than 20 percent
+        </p>
     </div>
 
-    <p>Good luck out there</p>
+    <p style="color:#FFFFFF;line-height:1.5;margin:0;">
+        Good luck out there,
+    </p>
+
+    <h3 style="color:#2CB67D;margin:0;">Aurora Tracker Team</h3>
 </div>
+
 </body>
 </html>
