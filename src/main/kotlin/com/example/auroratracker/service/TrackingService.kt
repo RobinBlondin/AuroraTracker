@@ -96,7 +96,7 @@ class TrackingService(
                   if (shouldNotify) {
                         log.info("Email sent to user: ${user.name} at (${user.lat.toString().take(5)}, ${user.lon.toString().take(5)})")
 
-                        val success = emailService.sendEmailAsync(user.email ?: "").await()
+                        val success = emailService.sendEmailAsync(user, "Aurora Tracker Notification", "notification.html", true, kp).await()
                         if (success) {
                               user.lastNotificationTime = ZonedDateTime.now(ZoneOffset.UTC)
                               userService.updateLastNotificationTime(user)
