@@ -13,14 +13,18 @@ import java.util.*
 class UserService(
       private val userRepository: UserRepository,
       private val jsonService: JsonService,
-      private val userMapper: UserMapper
+      private val userMapper: UserMapper,
+      private val emailService: EmailService
 ) {
       fun getAllUsers() = userRepository.findAll().map { userMapper.toDto(it) }
 
       fun getUserById(id: Long): Optional<UserDto> = userRepository.findById(id).map { userMapper.toDto(it) }
 
-      fun saveUser(userDto: UserDto): UserDto =
-            userMapper.toEntity(userDto).let { userMapper.toDto(userRepository.save(it)) }
+      fun saveUser(userDto: UserDto): UserDto {
+            val user = userMapper.toEntity(userDto).let { userMapper.toDto(userRepository.save(it)) }
+            emailService.sendEmailAsync(user, "Welcome to Aurora Tracker", "welcome.html", false)
+            return user
+      }
 
       fun deleteUserById(id: Long): Boolean {
             if (!userRepository.existsById(id)) {
