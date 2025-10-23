@@ -32,7 +32,7 @@ class EmailService(
             }
 
             val helper = MimeMessageHelper(message, true, "UTF-8")
-            helper.setFrom(dotenv?.get("MAIL_ADDRESS") ?: "")
+            helper.setFrom("Aurora Tracker <${dotenv?.get("MAIL_ADDRESS")}>")
             helper.setTo(user.email!!)
             helper.setSubject(subject)
             helper.setText(html, true)
