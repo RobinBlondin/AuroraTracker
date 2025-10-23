@@ -23,6 +23,7 @@ class UserService(
       fun saveUser(userDto: UserDto): UserDto {
             val user = userMapper.toEntity(userDto).let { userMapper.toDto(userRepository.save(it)) }
             emailService.sendEmailAsync(user, "Welcome to Aurora Tracker", "welcome.html", false)
+
             return user
       }
 
