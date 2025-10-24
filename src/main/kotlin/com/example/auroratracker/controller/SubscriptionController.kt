@@ -17,7 +17,7 @@ class SubscriptionController(
             if(subscriptionService.checkIfSubExists(dto)) {
                   val sub = subscriptionService.getSubByUserId(dto.userId!!).orElse(null) ?: return ResponseEntity(HttpStatus.NOT_FOUND)
 
-                  if(dto.lat != sub.lon || dto.lat != sub.lat) {
+                  if(dto.lon != sub.lon || dto.lat != sub.lat) {
                         subscriptionService.updateLonAndLat(sub)
                         return ResponseEntity.ok(sub)
                   } else {
