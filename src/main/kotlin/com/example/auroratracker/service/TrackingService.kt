@@ -10,15 +10,12 @@ import org.slf4j.LoggerFactory
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
-import java.time.ZoneOffset
-import java.time.ZonedDateTime
 import kotlin.math.*
 
 @Service
 class TrackingService(
       private val jsonService: JsonService,
-      private val userService: UserService,
-      private val emailService: EmailService
+      private val subscriptionService: SubscriptionService,
 ) {
       private val dotenv = Dotenv.configure().ignoreIfMissing().load()
       private val log = LoggerFactory.getLogger(this::class.java)
@@ -89,15 +86,15 @@ class TrackingService(
             if (points.isEmpty()) return@runBlocking
 
             val kp = getKpIndex() ?: return@runBlocking
-            val users = userService.getAllUsers()
+            val subs = subscriptionService.getAllSubs()
             log.info("KpIndex: $kp at ${LocalDateTime.now().toString().split("T")[1].take(5)}")
 
-            for (user in users) {
-                  if (!userService.isAfterSunsetAndClearSky(user)) continue
-                  if (userService.hasUserReceivedNotificationRecently(user)) continue
+            for (sub in subs) {
+                  if (!subscriptionService.isAfterSunsetAndClearSky(sub)) continue
+                  if (subscriptionService.hasUserReceivedNotificationRecently(sub)) continue
 
                   val nearby = points.filter { p ->
-                        distanceBetweenUsersAndAuroraPointInMeters(user.lat, user.lon, p.lat , p.lon) <= MAX_DISTANCE_FROM_AURORA_METERS
+                        distanceBetweenUsersAndAuroraPointInMeters(sub.lat!!, sub.lon!!, p.lat , p.lon) <= MAX_DISTANCE_FROM_AURORA_METERS
                   }
 
                   val shouldNotify = nearby.any { point ->
@@ -105,17 +102,11 @@ class TrackingService(
                         val auroraLat = point.lat
                         val probability = point.probability
 
-                        shouldNotifyUser(user.lat, user.lon, auroraLat, auroraLon, probability, kp)
+                        shouldNotifyUser(sub.lat!!, sub.lon!!, auroraLat, auroraLon, probability, kp)
                   }
 
                   if (shouldNotify) {
-                        log.info("Email sent to user: ${user.name} at (${user.lat.toString().take(5)}, ${user.lon.toString().take(5)})")
-
-                        val success = emailService.sendEmailAsync(user, "Aurora Tracker Notification", "notification.html", true, kp).await()
-                        if (success) {
-                              user.lastNotificationTime = ZonedDateTime.now(ZoneOffset.UTC)
-                              userService.updateLastNotificationTime(user)
-                        }
+                       TODO("Send push notification to user")
                   }
             }
       }
