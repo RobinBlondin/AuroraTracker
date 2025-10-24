@@ -1,7 +1,5 @@
 package com.example.auroratracker.controller
 
-import com.example.auroratracker.dto.UserDto
-import com.example.auroratracker.service.UserService
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
