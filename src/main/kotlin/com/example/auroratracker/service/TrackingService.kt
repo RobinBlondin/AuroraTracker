@@ -23,13 +23,25 @@ class TrackingService(
       private val dotenv = Dotenv.configure().ignoreIfMissing().load()
       private val log = LoggerFactory.getLogger(this::class.java)
 
-      fun distanceBetweenUsersAndAuroraPoint(
+      companion object {
+            const val MAX_DISTANCE_FROM_AURORA_METERS = 600_000.0
+            const val ONE_MIL_IN_METERS  = 10_000.0
+            const val EARTH_RADIUS_KM = 6371.0
+      }
+
+      /**
+       * Calculates the great-circle distance between two latitude/longitude points
+       * using the Haversine formula.
+       * Returns the distance in meters.
+       *
+       * Reference: https://en.wikipedia.org/wiki/Haversine_formula
+       */
+      fun distanceBetweenUsersAndAuroraPointInMeters(
             auroraLat: Double,
             auroraLon: Double,
             userLat: Double,
             userLon: Double
       ): Double {
-            val earthRadius = 6371.0
             val dLat = Math.toRadians(userLat - auroraLat)
             val dLon = Math.toRadians(userLon - auroraLon)
 
@@ -38,7 +50,10 @@ class TrackingService(
                         sin(dLon / 2) * sin(dLon / 2)
 
             val c = 2 * atan2(sqrt(a), sqrt(1 - a))
-            return earthRadius * c * 1000
+
+            val distanceKm = EARTH_RADIUS_KM * c
+            val distanceMeters = distanceKm * 1000
+            return distanceMeters
       }
 
       fun getAuroraPoints(): List<AuroraPoint> {
@@ -82,7 +97,7 @@ class TrackingService(
                   if (userService.hasUserReceivedNotificationRecently(user)) continue
 
                   val nearby = points.filter { p ->
-                        distanceBetweenUsersAndAuroraPoint(user.lat, user.lon, p.lat , p.lon) <= 1_200_000.0
+                        distanceBetweenUsersAndAuroraPointInMeters(user.lat, user.lon, p.lat , p.lon) <= MAX_DISTANCE_FROM_AURORA_METERS
                   }
 
                   val shouldNotify = nearby.any { point ->
@@ -106,7 +121,7 @@ class TrackingService(
       }
 
       fun auroraElevation(userLat: Double, userLon: Double, auroraLat: Double, auroraLon: Double, auroraHeight: Double = 150000.0): Double {
-            val distance = distanceBetweenUsersAndAuroraPoint(userLat, userLon, auroraLat, auroraLon)
+            val distance = distanceBetweenUsersAndAuroraPointInMeters(userLat, userLon, auroraLat, auroraLon)
             return Math.toDegrees(atan(auroraHeight / distance))
       }
 
@@ -118,9 +133,9 @@ class TrackingService(
             }
 
             val maxDistance = when {
-                  lat >= 65 -> 300_000.0
-                  lat >= 60 -> 500_000.0
-                  else -> 600_000.0
+                  lat >= 65 -> 30 * ONE_MIL_IN_METERS
+                  lat >= 60 -> 50 * ONE_MIL_IN_METERS
+                  else -> 60 * ONE_MIL_IN_METERS
             }
 
             val baseProbability = when {
@@ -136,7 +151,7 @@ class TrackingService(
 
       fun shouldNotifyUser(userLat: Double, userLon: Double, auroraLat: Double, auroraLon: Double, probability: Double, kp: Int): Boolean {
             val thresholds = getThresholdsForLatitude(userLat, kp)
-            val distance = distanceBetweenUsersAndAuroraPoint(userLat, userLon, auroraLat, auroraLon)
+            val distance = distanceBetweenUsersAndAuroraPointInMeters(userLat, userLon, auroraLat, auroraLon)
             if(distance > thresholds.maxDistance) return false
 
             val elevation = auroraElevation(userLat, userLon, auroraLat, auroraLon)
