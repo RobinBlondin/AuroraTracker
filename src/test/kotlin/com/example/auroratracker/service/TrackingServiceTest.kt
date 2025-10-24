@@ -1,7 +1,6 @@
 package com.example.auroratracker.service
 
 import com.example.auroratracker.dto.AuroraPoint
-import com.example.auroratracker.dto.UserDto
 import io.mockk.*
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.runBlocking
@@ -11,7 +10,7 @@ import org.junit.jupiter.api.Test
 
 class TrackingServiceTest {
       val jsonService = mockk<JsonService>()
-      val userService = mockk<UserService>()
+      val userService = mockk<SubscriptionService>()
       val emailService = mockk<EmailService>()
       val trackingService = spyk(TrackingService(jsonService, userService, emailService))
 
