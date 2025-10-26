@@ -1,22 +1,41 @@
-var map = L.map("map").setView([51.505, -0.09], 13);
+/* ===== Leaflet map functions ===== */
+
+const map = L.map("map").setView([51.505, -0.09], 13);
 
 L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
   maxZoom: 20,
-  attribution:
-    '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+  attribution: "OpenStreetMap"
 }).addTo(map);
 
+let currentMarker = null
+
+function placeMarker(lat, lon) {
+    if (currentMarker) {
+        map.removeLayer(currentMarker)
+    }
+    currentMarker = L.marker([lat, lon]).addTo(map)
+    map.setView([lat, lon])
+}
+
+const unSubLocation = () => {
+    L.marker([], 13).addTo(map);
+    map.setView([], 13);
+};
+
+const toggleDisplayMap = (style) => {
+    const mapElement = document.getElementById("map")
+    mapElement.style.display = style
+}
 
 const updateLocation = async () => {
   navigator.geolocation.getCurrentPosition(
     async (pos) => {
         const lat = pos.coords.latitude
         const lon = pos.coords.longitude
-      L.marker([lat, lon]).addTo(map);
-      map.setView([lat, lon]);
+        placeMarker(lat, lon)
         const subscription = await subscribe(lat, lon);
-        await postSubscription(subscription)
-        toggleDisplayMap()
+        await saveSubscription(subscription)
+        toggleDisplayMap("block")
     },
     (err) => {
       console.error(err);
@@ -24,26 +43,18 @@ const updateLocation = async () => {
   );
 };
 
-const unSubLocation = () => {
-  L.marker([], 13).addTo(map);
-  map.setView([], 13);
-};
 
-const setPinOnMap = (lat, lon) => {
-    L.marker([lat, lon]).addTo(map);
-    map.setView([lat, lon]);
-}
 
-const updateElementText = (className, textContent) => {
-    const element = document.querySelector(className)
-    element.textContent = textContent
-}
+/* =====  Helper functions ===== */
 
-const formatDateToString = (dateString) => {
-    const arr = new Date(dateString).toISOString().split("T")
-    const date = arr[0]
-    const time = arr[1].substring(0, 5)
-   return `${date} ${time}`
+const UI = {
+    setText(selector, text) {
+        document.querySelector(selector).textContent = text
+    },
+    formatDate(dateString) {
+        const date = new Date(dateString)
+        return date.toISOString().slice(0,16).replace("T"," ")
+    }
 }
 
 function urlBase64ToUint8Array(base64String) {
@@ -59,6 +70,9 @@ function urlBase64ToUint8Array(base64String) {
 }
 
 
+
+/* ===== Push notification logic ===== */
+
 const subscribe = async (lat, lon) => {
     let sw = await navigator.serviceWorker.ready
     let key = urlBase64ToUint8Array(PUBLIC_KEY)
@@ -66,9 +80,7 @@ const subscribe = async (lat, lon) => {
     let push = (await sw.pushManager.subscribe({
         userVisibleOnly: true,
         applicationServerKey: key
-    }))
-
-    push = await push.toJSON()
+    })).toJSON()
 
     return {
         endPoint: push.endpoint,
@@ -80,51 +92,39 @@ const subscribe = async (lat, lon) => {
     }
 }
 
-const postSubscription = async (sub) =>  {
-    fetch("/api/subscriptions/subscribe", {
+async function saveSubscription(data) {
+    const res = await fetch("/api/subscriptions/subscribe", {
         method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify(sub)
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(data)
     })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error("Request failed")
-            }
-            return response.json()
-        })
-        .then(result => {
-            console.log("Server svar:", result)
-        })
-        .catch(err => {
-            console.error(err)
-        })
 
+    if (!res.ok) throw new Error("Request failed")
+    return res.json()
 }
+
+
+
+/* ===== UI functions ===== */
 
 const fetchUserDataAndUpdateElements = async (userId) => {
     const response = await fetch("/api/subscriptions/" + userId)
     if (response.status === 200) {
         const user = await response.json()
-        setPinOnMap(user.lat, user.lon)
+        placeMarker(user.lat, user.lon)
 
         if (user.lastNotificationTime) {
-            const timeString = formatDateToString(user.lastNotificationTime)
-            updateElementText(".notification-timestamp", timeString)
+            UI.setText(".notification-timestamp", UI.formatDate(user.lastNotificationTime))
         }
 
         const positionString = `Latitude: ${user.lat.toFixed(4)}, Longitude: ${user.lon.toFixed(4)}`
-        updateElementText(".position-data", positionString)
+        UI.setText(".position-data", positionString)
     } else {
-        toggleDisplayMap()
+        toggleDisplayMap("none")
     }
 }
 
-const toggleDisplayMap = () => {
-    const mapElement = document.getElementById("map")
-    mapElement.style.display = mapElement.style.display === "none"? "block" : "none"
-}
+
 
 document.addEventListener("DOMContentLoaded", async () => {
     let userId = localStorage.getItem("userId")
