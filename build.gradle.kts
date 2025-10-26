@@ -39,7 +39,7 @@ dependencies {
       implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
       implementation("org.jetbrains.kotlin:kotlin-reflect")
       developmentOnly("org.springframework.boot:spring-boot-devtools")
-      runtimeOnly("org.postgresql:postgresql")
+      implementation("org.postgresql:postgresql")
       testImplementation("org.springframework.boot:spring-boot-starter-test")
       testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
       testImplementation("org.springframework.security:spring-security-test")
