@@ -6,7 +6,6 @@ L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
     '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
 }).addTo(map);
 
-
 const updateLocation = () => {
   navigator.geolocation.getCurrentPosition(
     (pos) => {
@@ -21,57 +20,64 @@ const updateLocation = () => {
 };
 
 const unSubLocation = () => {
-  L.marker([], 13).addTo(map);
-  map.setView([], 13);
+  let userId = localStorage.getItem("userId");
+  const response = fetch(
+    "http://localhost:8080/api/subscriptions/unsubscribe/" + userId,
+    {
+      method: "DELETE",
+    }
+  );
+
+  if (response.ok) {
+    const deleted = response.json();
+  }
+  alert("You have unsubscribed and will not get any notifications");
 };
 
 const setPinOnMap = (lat, lon) => {
-    L.marker([lat, lon]).addTo(map);
-    map.setView([lat, lon]);
-}
+  L.marker([lat, lon]).addTo(map);
+  map.setView([lat, lon]);
+};
 
 const updateElementText = (className, textContent) => {
-    const element = document.querySelector(className)
-    element.textContent = textContent
-}
+  const element = document.querySelector(className);
+  element.textContent = textContent;
+};
 
 const formatDateToString = (dateString) => {
-    const arr = new Date(dateString).toISOString().split("T")
-    const date = arr[0]
-    const time = arr[1].substring(0, 5)
-   return `${date} ${time}`
-}
+  const arr = new Date(dateString).toISOString().split("T");
+  const date = arr[0];
+  const time = arr[1].substring(0, 5);
+  return `${date} ${time}`;
+};
 
 document.addEventListener("DOMContentLoaded", async () => {
-    let userId = localStorage.getItem("userId")
-    if (!userId) {
-        userId = crypto.randomUUID()
-        localStorage.setItem("userId", userId)
-    }
+  let userId = localStorage.getItem("userId");
+  if (!userId) {
+    userId = crypto.randomUUID();
+    localStorage.setItem("userId", userId);
+  }
 
-    const response = await fetch("/api/subscriptions/" + userId)
+  const response = await fetch("/api/subscriptions/" + userId);
 
-    if (response.status === 200) {
+  if (response.status === 200) {
+    const user = await response.json();
 
-    const user = await response.json()
-
-
-    console.log(user)
-    setPinOnMap(user.lat, user.lon)
+    console.log(user);
+    setPinOnMap(user.lat, user.lon);
     if (user.lastNotificationTime) {
-        const timeString = formatDateToString(user.lastNotificationTime)
-        updateElementText(".notification-timestamp", timeString)
+      const timeString = formatDateToString(user.lastNotificationTime);
+      updateElementText(".notification-timestamp", timeString);
     }
-    const positionString = `Latitude: ${user.lat.toFixed(4)}, Longitude: ${user.lon.toFixed(4)}`
-    updateElementText(".position-data", positionString)
-    } else {
-        const mapElement = document.getElementById("map")
-        mapElement.style.display = "none"
-    }
-})
-
-
+    const positionString = `Latitude: ${user.lat.toFixed(
+      4
+    )}, Longitude: ${user.lon.toFixed(4)}`;
+    updateElementText(".position-data", positionString);
+  } else {
+    const mapElement = document.getElementById("map");
+    mapElement.style.display = "none";
+  }
+});
 
 //rensa vid varje knapptryuck i updatelocation och unsub vid start ska inte vara någon karta vid unsub
 //ska kartan försvvinna som vid start
-

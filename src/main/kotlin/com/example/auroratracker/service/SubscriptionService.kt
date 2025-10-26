@@ -4,6 +4,7 @@ import com.example.auroratracker.dto.SubscriptionDto
 import com.example.auroratracker.dto.WeatherResponseDto
 import com.example.auroratracker.mapper.SubscriptionMapper
 import com.example.auroratracker.repository.SubscriptionRepository
+import jakarta.transaction.Transactional
 import org.springframework.stereotype.Service
 import java.time.ZoneOffset
 import java.time.ZonedDateTime
@@ -22,11 +23,18 @@ class SubscriptionService(
       }
       fun saveSub(subDto: SubscriptionDto): SubscriptionDto = mapper.toEntity(subDto).let { mapper.toDto(subRepo.save(it)) }
 
+    @Transactional
       fun deleteSubByUserId(id: String): Boolean {
+
             if (!subRepo.existsByUserId(id)) {
                   return false
             }
-            subRepo.deleteByUserId(id)
+            //subRepo.removeByUserId(id)
+          try {
+              subRepo.removeByUserId(id)
+          } catch (e: Exception) {
+              e.cause?.printStackTrace()
+          }
             return true
       }
 

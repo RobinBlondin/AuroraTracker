@@ -7,5 +7,5 @@ import java.util.Optional
 interface SubscriptionRepository: JpaRepository<Subscription, Long> {
       fun getByUserId(id: String): Optional<Subscription>
       fun existsByUserId(userId: String): Boolean
-      fun deleteByUserId(id: String)
+      fun removeByUserId(id: String)
 }
