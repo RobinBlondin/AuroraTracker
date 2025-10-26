@@ -3,7 +3,7 @@ AuroraTracker is a Kotlin/Spring Boot service that monitors aurora (northern lig
 ## Inspiration
 Have you ever missed seeing northern lights near your location and wished you had known in advance? I have, and that’s what inspired this application. I live in southern Sweden, where auroras are rare, so it’s practical to get a notification when conditions are optimal for viewing.
 ## Current status
-AuroraTracker is under development and is currently undergoing real world testing with a limited set of users to evaluate whether the application sends notifications under optimal conditions. A frontend will be added after testing, allowing people to register for notifications, and a later goal is to build a mobile app that uses push notifications instead of email.
+Aurora Tracker has successfully completed a real world testing period with a limited group of users. Development is now focused on building a Progressive Web App that allows users to subscribe and receive push notifications directly on their devices. Further improvements will continue as the service evolves.
 ## Key Features
 - User management (create, fetch, delete) via REST endpoints
 - Scheduled aurora checks (every ~45 minutes)
