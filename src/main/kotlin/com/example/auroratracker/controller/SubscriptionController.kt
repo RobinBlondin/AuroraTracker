@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.*
 
-@Controller
+@RestController
 @RequestMapping(value = ["/api/subscriptions"])
 class SubscriptionController(
       private val subscriptionService: SubscriptionService
@@ -33,5 +33,14 @@ class SubscriptionController(
       fun unsubscribe(@PathVariable userId: String): ResponseEntity<Boolean> {
             val deleted = subscriptionService.deleteSubByUserId(userId)
             return ResponseEntity.ok(deleted)
+      }
+
+      @GetMapping("/{userId}")
+      fun getSubscription(@PathVariable userId: String): ResponseEntity<SubscriptionDto> {
+            val sub = subscriptionService.getSubByUserId(userId)
+            if(sub.isPresent) {
+                  return ResponseEntity.ok(sub.get())
+            }
+            return ResponseEntity(HttpStatus.NOT_FOUND)
       }
 }
