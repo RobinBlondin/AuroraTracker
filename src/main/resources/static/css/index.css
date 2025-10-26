@@ -1,0 +1,171 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: linear-gradient(to bottom, #0a1128, #1a2847, #0a1128);
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  min-height: 100vh;
+  font-family: sans-serif;
+}
+
+.wrapper {
+  height: 100%;
+  width: 100%;
+  max-width: 1000px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 0 1.5rem;
+}
+
+.header {
+  display: flex;
+  height: 4rem;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.5rem;
+  font-weight: 200;
+}
+
+.header h1 {
+  background: linear-gradient(to right, #00ff87, #60efff, #00ff87);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.map {
+  height: 25rem;
+  border-radius: 0.5rem;
+}
+
+.buttons {
+  display: flex;
+  height: 3rem;
+  border-radius: 0.5rem;
+  gap: 0.5rem;
+}
+
+.sub-button {
+  background-color: #00ff87;
+  color: #0a1128;
+  text-decoration: none;
+  padding: 1rem 2rem;
+  text-align: center;
+  border-radius: 0.5rem;
+  flex: 3;
+  font-weight: 600;
+  font-size: 1.5rem;
+  line-height: 0.75;
+}
+
+.sub-button:hover {
+  background-color: #00dd75;
+}
+
+.unsub-button {
+  background-color: #ff3860;
+  color: #0a1128;
+  text-decoration: none;
+  /* padding: 1rem 2rem; */
+  text-align: center;
+  border-radius: 0.5rem;
+  flex: 0.75;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.trash-icon {
+  height: 75%;
+}
+
+.unsub-button:hover {
+  background-color: #b91e32;
+}
+
+.info {
+  background-color: brown;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.paragraphBox {
+  background-color: cornflowerblue;
+  display: flex;
+  flex-direction: column;
+}
+
+.positions {
+  background-color: cadetblue;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.timeStamp {
+  background-color: chartreuse;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.info,
+.positions,
+.timeStamp {
+  background-color: rgba(26, 40, 71, 0.5);
+  border: 1px solid rgba(0, 255, 135, 0.1);
+}
+
+.info h3,
+.positions h3,
+.timeStamp h3 {
+  color: #00ff87;
+}
+
+.info p,
+.positions p,
+.timeStamp p {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+@media (max-width: 768px) {
+  body {
+  }
+
+  .wrapper {
+    padding: 0 1rem 2rem 1rem;
+  }
+
+  .header {
+    height: 4rem;
+  }
+
+  .map {
+    height: 25rem;
+  }
+
+  .buttons {
+    height: 3rem;
+  }
+
+  .info {
+  }
+
+  .positions {
+  }
+
+  .timeStamp {
+  }
+}
