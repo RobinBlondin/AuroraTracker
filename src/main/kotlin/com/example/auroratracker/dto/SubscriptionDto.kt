@@ -1,5 +1,6 @@
 package com.example.auroratracker.dto
 
+import java.time.LocalDateTime
 import java.time.ZonedDateTime
 
 class SubscriptionDto(
@@ -11,4 +12,5 @@ class SubscriptionDto(
       var lon: Double? = null,
       var lat: Double? = null,
       var lastNotificationTime: ZonedDateTime? = null,
+      var updatedAt: LocalDateTime? = null,
 )
