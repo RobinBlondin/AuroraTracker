@@ -10,47 +10,63 @@
       integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
       crossorigin=""
     />
-    <link rel="stylesheet" href="../static/css/index.css" />
+    <link rel="stylesheet" href="css/index.css" />
   </head>
   <body>
     <div class="wrapper">
       <header class="header">
-        <h1>Aurora Tracker</h1>
+        <p class="logo">Aurora Tracker</p>
+          <div class="slogan-container">
+              <img class="pin-icon" src="images/pin-icon.png" alt="map location pin icon">
+              <p class="slogan">Chase the northern lights</p>
+          </div>
       </header>
-      <section id="map" class="map"></section>
+      <section class="map">
+          <div id="map"></div>
+      </section>
       <section class="buttons">
-        <div class="sub-button" onclick="updateLocation()">Update location</div>
+        <div class="sub-button" onclick="updateLocation()">
+            <img class="nav-icon" src="images/navigate-icon.png" alt="Icon of a navigation arrow" />
+            <p>UPDATE LOCATION</p>
+        </div>
         <div class="unsub-button" onclick="unSubLocation()">
           <img
             class="trash-icon"
-            src="../static/images/trash-icon.png"
+            src="images/trash-icon.png"
             alt="trash icon"
           />
         </div>
       </section>
+        <section class="info">
+            <h3>How Aurora Tracker Works</h3>
+            <p>
+                Aurora Tracker keeps an eye on geomagnetic activity around the world and alerts you when the Northern Lights might be visible from your location.
+                </p>
+
+               <p> The system gathers live data from space weather services and calculates how far the auroral oval  extends based on the current Kp index, a global measure of geomagnetic disturbance.</p>
+
+                <p>Your position is compared to the edge of this auroral zone using precise geographic formulas (yes, real math stolen from very skilled mathematicians!). If conditions look promising, Aurora Tracker sends you a notification so you don’t miss the show in the sky.
+            </p>
+        </section>
       <section class="info">
-        <h3>How your location is used</h3>
+        <h3>How Your Location Is Used</h3>
         <p>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Distinctio
-          quasi enim, harum, itaque fugiat vel nulla maiores ea consequatur quos
-          nam voluptas veritatis deleniti ad! A vero assumenda blanditiis id
-          iure molestiae quia minus fuga voluptatum, ex modi tempora ipsam
-          molestias dignissimos repellendus? Atque nesciunt natus officiis dicta
-          tempora. Error natus sit et eos aspernatur debitis.
+            When you update your location, it is stored in our database. We only save this information to provide accurate aurora alerts, and we do not collect any other personal data.
         </p>
+          <p> If you want to remove your location, press the red trash icon and your position will be deleted from our
+              system. If you update your location while one is already stored, the previous position will be
+              overwritten. This makes it easy to update your location when traveling or away from home.</p>
       </section>
       <section class="positions">
-        <h3>Last position updated</h3>
+        <h3>Current Position Registered</h3>
         <div class="paragraphBox">
-          <p>Lorem ipsum dolor sit amet consectetur.</p>
-          <p>Labore aspernatur blanditiis unde nesciunt expedita.</p>
+          <p class="position-data">No current position selected</p>
         </div>
       </section>
       <section class="timeStamp">
-        <h3>Last position updated</h3>
+        <h3>Last Notification Recieved</h3>
         <div class="paragraphBox">
-          <p>Lorem ipsum dolor sit amet consectetur.</p>
-          <p>Labore aspernatur blanditiis unde nesciunt expedita.</p>
+          <p class="notification-timestamp">No notifications received</p>
         </div>
       </section>
     </div>
@@ -59,6 +75,6 @@
       integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
       crossorigin=""
     ></script>
-    <script src="../static/script/script.js"></script>
+    <script src="script/script.js"></script>
   </body>
 </html>
