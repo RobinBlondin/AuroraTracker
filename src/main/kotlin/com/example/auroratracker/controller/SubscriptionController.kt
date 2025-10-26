@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*
 class SubscriptionController(
       private val subscriptionService: SubscriptionService
 ) {
-      @GetMapping("subscribe")
+      @PostMapping("subscribe")
       fun subscribe(@RequestBody dto: SubscriptionDto): ResponseEntity<SubscriptionDto> {
             if(subscriptionService.checkIfSubExists(dto)) {
                   val sub = subscriptionService.getSubByUserId(dto.userId!!).orElse(null) ?: return ResponseEntity(HttpStatus.NOT_FOUND)
