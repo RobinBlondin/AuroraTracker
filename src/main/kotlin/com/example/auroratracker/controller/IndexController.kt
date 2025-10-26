@@ -6,7 +6,7 @@ import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.GetMapping
 
 @Controller
-class IndexControlle(
+class IndexController(
 
 ) {
       private val dotenv = Dotenv.configure().ignoreIfMissing().load()
