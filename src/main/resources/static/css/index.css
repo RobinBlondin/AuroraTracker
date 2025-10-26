@@ -25,24 +25,41 @@ body {
 
 .header {
   display: flex;
-  height: 4rem;
+    flex-direction: column;
+    height: 6rem;
   justify-content: center;
   align-items: center;
-  font-size: 1.5rem;
-  font-weight: 200;
 }
 
-.header h1 {
+.logo {
   background: linear-gradient(to right, #00ff87, #60efff, #00ff87);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+    font-size: 3rem;
+}
+
+.slogan-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.slogan {
+    color: rgba(0, 255, 135, 0.8)
 }
 
 .map {
   height: 25rem;
   border-radius: 0.5rem;
-  background-image: url("../images/startpageformap.png");
-  background-position: center;
+  background: url("../images/startpageformap.png") center / cover no-repeat;
+    overflow: hidden;
+}
+
+#map {
+    height: 100%;
+    width: 100%;
+    border-radius: inherit;
 }
 
 .buttons {
@@ -53,6 +70,10 @@ body {
 }
 
 .sub-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
   background-color: #00ff87;
   color: #0a1128;
   text-decoration: none;
@@ -61,8 +82,7 @@ body {
   border-radius: 0.5rem;
   flex: 3;
   font-weight: 600;
-  font-size: 1.5rem;
-  line-height: 0.75;
+  font-size: 1rem;
 }
 
 .sub-button:hover {
@@ -83,7 +103,7 @@ body {
 }
 
 .trash-icon {
-  height: 75%;
+  height: 50%;
 }
 
 .unsub-button:hover {
@@ -100,7 +120,6 @@ body {
 }
 
 .paragraphBox {
-  background-color: cornflowerblue;
   display: flex;
   flex-direction: column;
 }
@@ -125,9 +144,10 @@ body {
 
 .info,
 .positions,
-.timeStamp {
+.timeStamp,
+.map {
   background-color: rgba(26, 40, 71, 0.5);
-  border: 1px solid rgba(0, 255, 135, 0.1);
+  border: 2px solid rgba(0, 255, 135, 0.1);
 }
 
 .info h3,
@@ -151,7 +171,7 @@ body {
   }
 
   .header {
-    height: 4rem;
+    height: 5rem;
   }
 
   .map {
@@ -171,3 +191,14 @@ body {
   .timeStamp {
   }
 }
+
+@media (max-width: 353px) {
+    .logo {
+        font-size: 2rem;
+    }
+
+    .slogan-container {
+        display: none;
+    }
+}
+
