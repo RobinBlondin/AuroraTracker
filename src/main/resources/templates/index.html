@@ -19,13 +19,14 @@
       </header>
       <section id="map" class="map"></section>
       <section class="buttons">
-        <a class="sub-button" href="">Update location</a>
-        <a class="unsub-button" href=""
-          ><img
+        <div class="sub-button" onclick="updateLocation()">Update location</div>
+        <div class="unsub-button" onclick="unSubLocation()">
+          <img
             class="trash-icon"
             src="../static/images/trash-icon.png"
             alt="trash icon"
-        /></a>
+          />
+        </div>
       </section>
       <section class="info">
         <h3>How your location is used</h3>
