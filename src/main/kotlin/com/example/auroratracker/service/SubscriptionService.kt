@@ -25,6 +25,7 @@ class SubscriptionService(
       @Transactional
       fun saveSub(subDto: SubscriptionDto): SubscriptionDto = mapper.toEntity(subDto).let { mapper.toDto(subRepo.save(it)) }
 
+    @Transactional
       fun deleteSubByUserId(id: String): Boolean {
             if (!subRepo.existsByUserId(id)) {
                   return false

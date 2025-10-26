@@ -16,47 +16,71 @@
     <div class="wrapper">
       <header class="header">
         <p class="logo">Aurora Tracker</p>
-          <div class="slogan-container">
-              <img class="pin-icon" src="images/pin-icon.png" alt="map location pin icon">
-              <p class="slogan">Chase the northern lights</p>
-          </div>
+        <div class="slogan-container">
+          <img
+            class="pin-icon"
+            src="images/pin-icon.png"
+            alt="map location pin icon"
+          />
+          <p class="slogan">Chase the northern lights</p>
+        </div>
       </header>
       <section class="map">
-          <div id="map"></div>
+        <div id="map"></div>
       </section>
       <section class="buttons">
         <div class="sub-button" onclick="updateLocation()">
-            <img class="nav-icon" src="images/navigate-icon.png" alt="Icon of a navigation arrow" />
-            <p>Update Location</p>
+          <img
+            class="nav-icon"
+            src="images/navigate-icon.png"
+            alt="Icon of a navigation arrow"
+          />
+          <p>Update Location</p>
         </div>
-        <div class="unsub-button" onclick="unSubLocation()">
+        <div class="unsub-button" onclick="unSubscribeOnLocation()">
           <img
             class="trash-icon"
             src="images/trash-icon.png"
             alt="trash icon"
           />
-            <p>Remove Location</p>
+          <p>Remove Location</p>
         </div>
       </section>
-        <section class="info">
-            <h3>How Aurora Tracker Works</h3>
-            <p>
-                Aurora Tracker keeps an eye on geomagnetic activity around the world and alerts you when the Northern Lights might be visible from your location.
-                </p>
+      <section class="info">
+        <h3>How Aurora Tracker Works</h3>
+        <p>
+          Aurora Tracker keeps an eye on geomagnetic activity around the world
+          and alerts you when the Northern Lights might be visible from your
+          location.
+        </p>
 
-               <p> The system gathers live data from space weather services and calculates how far the auroral oval  extends based on the current Kp index, a global measure of geomagnetic disturbance.</p>
+        <p>
+          The system gathers live data from space weather services and
+          calculates how far the auroral oval extends based on the current Kp
+          index, a global measure of geomagnetic disturbance.
+        </p>
 
-                <p>Your position is compared to the edge of this auroral zone using precise geographic formulas (yes, real math stolen from very skilled mathematicians!). If conditions look promising, Aurora Tracker sends you a notification so you don’t miss the show in the sky.
-            </p>
-        </section>
+        <p>
+          Your position is compared to the edge of this auroral zone using
+          precise geographic formulas (yes, real math stolen from very skilled
+          mathematicians!). If conditions look promising, Aurora Tracker sends
+          you a notification so you don’t miss the show in the sky.
+        </p>
+      </section>
       <section class="info">
         <h3>How Your Location Is Used</h3>
         <p>
-            When you update your location, it is stored in our database. We only save this information to provide accurate aurora alerts, and we do not collect any other personal data.
+          When you update your location, it is stored in our database. We only
+          save this information to provide accurate aurora alerts, and we do not
+          collect any other personal data.
         </p>
-          <p> If you want to remove your location, press the red trash icon and your position will be deleted from our
-              system. If you update your location while one is already stored, the previous position will be
-              overwritten. This makes it easy to update your location when traveling or away from home.</p>
+        <p>
+          If you want to remove your location, press the red trash icon and your
+          position will be deleted from our system. If you update your location
+          while one is already stored, the previous position will be
+          overwritten. This makes it easy to update your location when traveling
+          or away from home.
+        </p>
       </section>
       <section class="positions">
         <h3>Current Position Registered</h3>
@@ -77,7 +101,7 @@
       crossorigin=""
     ></script>
     <script>
-        const PUBLIC_KEY = "[[${key}]]";
+      const PUBLIC_KEY = "[[${key}]]";
     </script>
     <script src="script/script.js"></script>
   </body>
