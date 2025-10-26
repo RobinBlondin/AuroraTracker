@@ -4,25 +4,29 @@ import com.example.auroratracker.dto.SubscriptionDto
 import com.example.auroratracker.service.SubscriptionService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.*
+import java.time.LocalDateTime
 
 @RestController
 @RequestMapping(value = ["/api/subscriptions"])
 class SubscriptionController(
       private val subscriptionService: SubscriptionService
 ) {
-      @GetMapping("subscribe")
+      @PostMapping("subscribe")
       fun subscribe(@RequestBody dto: SubscriptionDto): ResponseEntity<SubscriptionDto> {
-            if(subscriptionService.checkIfSubExists(dto)) {
-                  val sub = subscriptionService.getSubByUserId(dto.userId!!).orElse(null) ?: return ResponseEntity(HttpStatus.NOT_FOUND)
+            if (subscriptionService.checkIfSubExists(dto)) {
+                  val sub = subscriptionService.getSubByUserId(dto.userId!!).orElse(null) ?: return ResponseEntity(
+                        HttpStatus.NOT_FOUND
+                  )
 
-                  if(dto.lon != sub.lon || dto.lat != sub.lat) {
-                        subscriptionService.updateLonAndLat(sub)
-                        return ResponseEntity.ok(sub)
-                  } else {
-                        return ResponseEntity.status(HttpStatus.CONFLICT).build()
+                  if(LocalDateTime.now().isBefore(sub.updatedAt?.plusMinutes(1) ?: LocalDateTime.now())) {
+                        val headers = org.springframework.http.HttpHeaders()
+                        headers.add("Retry-After", "60")
+                        return ResponseEntity(null, headers, HttpStatus.TOO_MANY_REQUESTS)
                   }
+
+                  subscriptionService.updateLonAndLat(sub)
+                  return ResponseEntity.ok(sub)
             }
 
             val sub = subscriptionService.saveSub(dto)
@@ -38,7 +42,7 @@ class SubscriptionController(
       @GetMapping("/{userId}")
       fun getSubscription(@PathVariable userId: String): ResponseEntity<SubscriptionDto> {
             val sub = subscriptionService.getSubByUserId(userId)
-            if(sub.isPresent) {
+            if (sub.isPresent) {
                   return ResponseEntity.ok(sub.get())
             }
             return ResponseEntity(HttpStatus.NOT_FOUND)

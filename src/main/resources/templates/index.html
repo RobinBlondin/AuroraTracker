@@ -30,12 +30,8 @@
       </section>
       <section class="buttons">
         <div class="sub-button" onclick="updateLocation()">
-          <img
-            class="nav-icon"
-            src="images/navigate-icon.png"
-            alt="Icon of a navigation arrow"
-          />
-          <p>UPDATE LOCATION</p>
+            <img class="nav-icon" src="images/navigate-icon.png" alt="Icon of a navigation arrow" />
+            <p>Update Location</p>
         </div>
         <div class="unsub-button" onclick="unSubLocation()">
           <img
@@ -43,6 +39,7 @@
             src="images/trash-icon.png"
             alt="trash icon"
           />
+            <p>Remove Location</p>
         </div>
       </section>
       <section class="info">
@@ -99,6 +96,9 @@
       integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
       crossorigin=""
     ></script>
+    <script>
+        const PUBLIC_KEY = "[[${key}]]";
+    </script>
     <script src="script/script.js"></script>
   </body>
 </html>
