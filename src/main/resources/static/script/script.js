@@ -7,10 +7,10 @@ L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
 }).addTo(map);
 
 
-const updateLocation = () => {
+const updateLocation = async () => {
+
   navigator.geolocation.getCurrentPosition(
     (pos) => {
-      console.log(pos.coords.latitude, pos.coords.longitude);
       L.marker([pos.coords.latitude, pos.coords.longitude]).addTo(map);
       map.setView([pos.coords.latitude, pos.coords.longitude]);
     },
@@ -18,6 +18,8 @@ const updateLocation = () => {
       console.error(err);
     }
   );
+
+    await subscribe()
 };
 
 const unSubLocation = () => {
@@ -42,12 +44,27 @@ const formatDateToString = (dateString) => {
    return `${date} ${time}`
 }
 
+const subscribe = async () => {
+    const key = `[[${key}]]`;
+    let sw = await navigator.serviceWorker.ready
+    let push = await sw.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: key
+    })
+
+    console.log(push)
+}
+
 document.addEventListener("DOMContentLoaded", async () => {
     let userId = localStorage.getItem("userId")
     if (!userId) {
         userId = crypto.randomUUID()
         localStorage.setItem("userId", userId)
     }
+
+    addEventListener('load', async () => {
+        let sw  = await navigator.serviceWorker.register("script/sw.js")
+    })
 
     const response = await fetch("/api/subscriptions/" + userId)
 
