@@ -74,40 +74,47 @@ body {
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
-  background-color: #00ff87;
+  background-color: rgba(0, 255, 135, 0.8);
   color: #0a1128;
   text-decoration: none;
   padding: 1rem 2rem;
   text-align: center;
   border-radius: 0.5rem;
-  flex: 3;
+  flex: 1;
   font-weight: 600;
   font-size: 1rem;
 }
 
 .sub-button:hover {
-  background-color: #00dd75;
+  background-color: rgba(0, 221, 117, 0.8);
 }
 
 .unsub-button {
-  background-color: #ff3860;
+background: rgba(255, 77, 109, 0.85);
   color: #0a1128;
   text-decoration: none;
-  /* padding: 1rem 2rem; */
+  padding: 1rem 2rem;
   text-align: center;
   border-radius: 0.5rem;
-  flex: 0.75;
+  flex: 1;
   display: flex;
   justify-content: center;
   align-items: center;
+    gap:0.5rem;
+    font-weight: 600;
+    font-size: 1rem;
 }
 
 .trash-icon {
-  height: 50%;
+  height:100%
 }
 
 .unsub-button:hover {
-  background-color: #b91e32;
+  background-color: rgba(230, 54, 90, 0.9);
+}
+
+.sub-button:hover, .unsub-button:hover {
+    cursor: pointer;
 }
 
 .info {
