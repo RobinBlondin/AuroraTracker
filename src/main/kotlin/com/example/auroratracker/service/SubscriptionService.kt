@@ -6,6 +6,7 @@ import com.example.auroratracker.mapper.SubscriptionMapper
 import com.example.auroratracker.repository.SubscriptionRepository
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.time.LocalDateTime
 import java.time.ZoneOffset
 import java.time.ZonedDateTime
 import java.util.*
@@ -37,6 +38,7 @@ class SubscriptionService(
 
             sub.lon = dto.lon
             sub.lat = dto.lat
+            sub.updatedAt = LocalDateTime.now()
 
             saveSub(sub)
       }
