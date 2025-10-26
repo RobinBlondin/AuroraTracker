@@ -23,7 +23,7 @@ class SubscriptionService(
       fun saveSub(subDto: SubscriptionDto): SubscriptionDto = mapper.toEntity(subDto).let { mapper.toDto(subRepo.save(it)) }
 
       fun deleteSubByUserId(id: String): Boolean {
-            if (!subRepo.existByUserId(id)) {
+            if (!subRepo.existsByUserId(id)) {
                   return false
             }
             subRepo.deleteByUserId(id)
@@ -39,7 +39,7 @@ class SubscriptionService(
             saveSub(sub)
       }
 
-      fun checkIfSubExists(dto: SubscriptionDto): Boolean = subRepo.existByUserId(dto.userId!!)
+      fun checkIfSubExists(dto: SubscriptionDto): Boolean = subRepo.existsByUserId(dto.userId!!)
 
       fun isAfterSunsetAndClearSky(dto: SubscriptionDto): Boolean {
             val url =
