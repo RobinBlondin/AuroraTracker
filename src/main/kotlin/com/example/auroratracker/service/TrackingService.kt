@@ -16,13 +16,14 @@ import kotlin.math.*
 class TrackingService(
       private val jsonService: JsonService,
       private val subscriptionService: SubscriptionService,
+      private val pushNotificationService: PushNotificationService
 ) {
       private val dotenv = Dotenv.configure().ignoreIfMissing().load()
       private val log = LoggerFactory.getLogger(this::class.java)
 
       companion object {
             const val MAX_DISTANCE_FROM_AURORA_METERS = 600_000.0
-            const val ONE_MIL_IN_METERS  = 10_000.0
+            const val ONE_MIL_IN_METERS = 10_000.0
             const val EARTH_RADIUS_KM = 6371.0
       }
 
@@ -81,7 +82,7 @@ class TrackingService(
       }
 
       @Scheduled(fixedDelay = 1800000)
-       fun checkAuroraForUsers() = runBlocking {
+      fun checkAuroraForUsers() = runBlocking {
             val points = getAuroraPoints()
             if (points.isEmpty()) return@runBlocking
 
@@ -92,9 +93,15 @@ class TrackingService(
             for (sub in subs) {
                   if (!subscriptionService.isAfterSunsetAndClearSky(sub)) continue
                   if (subscriptionService.hasUserReceivedNotificationRecently(sub)) continue
+                  if(sub.endPoint.isNullOrEmpty() || sub.p256dh.isNullOrEmpty() || sub.auth.isNullOrEmpty()) continue
 
                   val nearby = points.filter { p ->
-                        distanceBetweenUsersAndAuroraPointInMeters(sub.lat!!, sub.lon!!, p.lat , p.lon) <= MAX_DISTANCE_FROM_AURORA_METERS
+                        distanceBetweenUsersAndAuroraPointInMeters(
+                              sub.lat!!,
+                              sub.lon!!,
+                              p.lat,
+                              p.lon
+                        ) <= MAX_DISTANCE_FROM_AURORA_METERS
                   }
 
                   val shouldNotify = nearby.any { point ->
@@ -106,12 +113,18 @@ class TrackingService(
                   }
 
                   if (shouldNotify) {
-                       TODO("Send push notification to user")
+                        pushNotificationService.sendNotification(sub.endPoint, sub.p256dh, sub.auth, "")
                   }
             }
       }
 
-      fun auroraElevation(userLat: Double, userLon: Double, auroraLat: Double, auroraLon: Double, auroraHeight: Double = 150000.0): Double {
+      fun auroraElevation(
+            userLat: Double,
+            userLon: Double,
+            auroraLat: Double,
+            auroraLon: Double,
+            auroraHeight: Double = 150000.0
+      ): Double {
             val distance = distanceBetweenUsersAndAuroraPointInMeters(userLat, userLon, auroraLat, auroraLon)
             return Math.toDegrees(atan(auroraHeight / distance))
       }
@@ -140,10 +153,17 @@ class TrackingService(
             return Thresholds(minKp = minKp, maxDistance = maxDistance, minProbability = minProbability)
       }
 
-      fun shouldNotifyUser(userLat: Double, userLon: Double, auroraLat: Double, auroraLon: Double, probability: Double, kp: Int): Boolean {
+      fun shouldNotifyUser(
+            userLat: Double,
+            userLon: Double,
+            auroraLat: Double,
+            auroraLon: Double,
+            probability: Double,
+            kp: Int
+      ): Boolean {
             val thresholds = getThresholdsForLatitude(userLat, kp)
             val distance = distanceBetweenUsersAndAuroraPointInMeters(userLat, userLon, auroraLat, auroraLon)
-            if(distance > thresholds.maxDistance) return false
+            if (distance > thresholds.maxDistance) return false
 
             val elevation = auroraElevation(userLat, userLon, auroraLat, auroraLon)
             if (elevation < 15) return false
