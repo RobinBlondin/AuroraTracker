@@ -9,13 +9,12 @@ self.addEventListener("activate", (event) => {
 });
 
 self.addEventListener("push", (event) => {
-    const data = event.data ? event.data.json() : {};
-    const title = data.title || "Aurora Alert";
+    const title =  "Aurora Alert";
     const options = {
-        body: data.body || "Aurora activity has been detected near your location!",
+        body:  "Aurora activity has been detected near your location!",
         icon: "/images/icon-192.png",
         badge: "/images/icon-192.png",
-        data: data.url || "/"
+        data:  "/"
     };
 
     event.waitUntil(self.registration.showNotification(title, options));
