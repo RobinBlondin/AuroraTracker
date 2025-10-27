@@ -23,8 +23,8 @@ class WebSecurityConfig {
                               .requestMatchers(
                                     "/",
                                     "/push",
-                                    "/api/subscriptions/subscribe",
-                                    "/api/subscriptions/unsubscribe",
+                                    "/api/subscriptions/**/**",
+                                          "/api/push/**",
                                     "/css/**",
                                     "/manifest.json",
                                     "/sw,js",
@@ -33,7 +33,7 @@ class WebSecurityConfig {
                               ).permitAll()
                               .anyRequest().authenticated()
                   }
-                  .httpBasic {} // enkelt skydd för allt annat, kan bytas senare
+                  .httpBasic {}
             return http.build()
       }
 
