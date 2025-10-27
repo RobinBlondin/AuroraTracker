@@ -30,6 +30,7 @@ const unSubscribeOnLocation = async () => {
 
     if (response.ok) {
         toggleDisplayMap("none")
+        UI.setText(".position-data", "No current position selected")
     }
 };
 
@@ -47,6 +48,7 @@ const updateLocation = async () => {
             const subscription = await subscribe(lat, lon);
             await saveSubscription(subscription);
             toggleDisplayMap("block");
+            UI.setText(".position-data", createPositionString(lat, lon))
         },
         (err) => {
             console.error(err);
@@ -81,13 +83,15 @@ function urlBase64ToUint8Array(base64String) {
 /* ===== Push notification logic ===== */
 
 const subscribe = async (lat, lon) => {
-    const registration = await unsubscribeServiceWorker()
-
-    const push = (await registration.pushManager.subscribe({
-        userVisibleOnly: true,
-        applicationServerKey: urlBase64ToUint8Array(PUBLIC_KEY)
-    })).toJSON()
-
+    const registration = await navigator.serviceWorker.ready;
+    let subscription = await registration.pushManager.getSubscription();
+    if (!subscription) {
+        subscription = await registration.pushManager.subscribe({
+            userVisibleOnly: true,
+            applicationServerKey: urlBase64ToUint8Array(PUBLIC_KEY)
+        });
+    }
+    const push = subscription.toJSON();
     return {
         endPoint: push.endpoint,
         auth: push.keys.auth,
@@ -135,14 +139,17 @@ const fetchUserDataAndUpdateElements = async (userId) => {
             );
         }
 
-        const positionString = `Latitude: ${user.lat.toFixed(
-            4
-        )}, Longitude: ${user.lon.toFixed(4)}`;
-        UI.setText(".position-data", positionString);
+        UI.setText(".position-data", createPositionString(user.lat, user.lon));
     } else {
         toggleDisplayMap("none");
     }
 };
+
+function createPositionString(lat, lon) {
+    return  `Latitude: ${lat.toFixed(
+        4
+    )}, Longitude: ${lon.toFixed(4)}`;
+}
 
 document.addEventListener("DOMContentLoaded", async () => {
     let userId = localStorage.getItem("userId");
@@ -150,8 +157,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         userId = crypto.randomUUID();
         localStorage.setItem("userId", userId);
     }
-
-    console.log("PUBLIC_KEY", PUBLIC_KEY, PUBLIC_KEY.length);
 
     await navigator.serviceWorker.register("/sw.js");
     console.log("SW registered");
