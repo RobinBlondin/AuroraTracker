@@ -20,18 +20,7 @@ class WebSecurityConfig {
                   .csrf { it.disable() }
                   .authorizeHttpRequests { auth ->
                         auth
-                              .requestMatchers(
-                                    "/",
-                                    "/push",
-                                    "/api/subscriptions/**/**",
-                                          "/api/push/**",
-                                    "/css/**",
-                                    "/manifest.json",
-                                    "/sw,js",
-                                    "/script/**",
-                                    "/images/**"
-                              ).permitAll()
-                              .anyRequest().authenticated()
+                              .anyRequest().permitAll()
                   }
                   .httpBasic {}
             return http.build()
