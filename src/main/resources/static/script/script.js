@@ -22,7 +22,7 @@ const unSubscribeOnLocation = async () => {
     await unsubscribeServiceWorker()
 
     const response = await fetch(
-        "http://localhost:8080/api/subscriptions/unsubscribe/" + userId,
+        "/api/subscriptions/unsubscribe/" + userId,
         {
             method: "DELETE",
         }
