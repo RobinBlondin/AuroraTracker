@@ -23,10 +23,6 @@ class PushNotificationService {
       private val pushService = PushService(publicKey, privateKey, subject)
 
       fun sendNotification(endpoint: String?, p256dh: String?, auth: String?, message: String) {
-            println(publicKey)
-            println(privateKey)
-            println(subject)
-
                   try {
                         val subscription = Subscription(endpoint, Subscription.Keys(p256dh, auth))
                         val notification = Notification(subscription, message)
