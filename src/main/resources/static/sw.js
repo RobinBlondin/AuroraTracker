@@ -12,7 +12,7 @@ self.addEventListener("push", (event) => {
     const data = event.data ? event.data.json() : {};
     const title = data.title || "Aurora Alert";
     const options = {
-        body: data.body || "New aurora activity detected!",
+        body: data.body || "Aurora activity has been detected near your location!",
         icon: "/images/icon-192.png",
         badge: "/images/icon-192.png",
         data: data.url || "/"
