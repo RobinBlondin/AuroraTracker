@@ -34,6 +34,7 @@ class SubscriptionService(
             return true
       }
 
+      @Transactional
       fun updateLonAndLat(dto: SubscriptionDto) {
             val sub = getSubByUserId(dto.userId!!).orElse(null) ?: return
 
