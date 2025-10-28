@@ -97,13 +97,23 @@
         </div>
       </section>
     </div>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-messaging-compat.js"></script>
     <script
       src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
       integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
       crossorigin=""
     ></script>
     <script>
-      const PUBLIC_KEY = "[[${key}]]";
+      const PUBLIC_KEY = "[[${vapidKey}]]";
+      const FIREBASE_KEY = "[[${firebaseKey}]]";
+      const FIREBASE_API_KEY = "[[${firebaseApiKey}]]";
+      const FIREBASE_AUTH_DOMAIN = "[[${firebaseAuthDomain}]]";
+      const FIREBASE_PROJECT_ID = "[[${firebaseProjectId}]]";
+      const FIREBASE_STORAGE_BUCKET = "[[${firebaseStorageBucket}]]";
+      const FIREBASE_MESSAGING_SENDER_ID = "[[${firebaseMessagingSenderId}]]";
+      const FIREBASE_APP_ID = "[[${firebaseAppId}]]";
+      const FIREBASE_MEASUREMENT_ID = "[[${firebaseMeasurementId}]]"
     </script>
     <script src="/script/script.js"></script>
   </body>
