@@ -1,0 +1,1 @@
+self.importScripts('/sw.js');
