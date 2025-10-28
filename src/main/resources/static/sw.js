@@ -9,6 +9,7 @@ self.addEventListener("activate", (event) => {
 });
 
 self.addEventListener("push", (event) => {
+    if(!event.data) return;
     const title =  "Aurora Alert";
     const options = {
         body:  "Aurora activity has been detected near your location!",
@@ -16,7 +17,6 @@ self.addEventListener("push", (event) => {
         badge: "/images/icon-192.png",
         data:  "/"
     };
-
     event.waitUntil(self.registration.showNotification(title, options));
 });
 
@@ -35,7 +35,7 @@ firebase.initializeApp(self.APP_CONFIG);
 const messaging = firebase.messaging();
 
 messaging.onBackgroundMessage(payload => {
-    console.log("FCM background message:", payload);
+    if(!payload || !payload.notification) return
     const { title, body } = payload.notification;
     self.registration.showNotification(title, { body });
 });
