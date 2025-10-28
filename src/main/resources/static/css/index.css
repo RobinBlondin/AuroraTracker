@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Bungee&display=swap');
+
 * {
   padding: 0;
   margin: 0;
@@ -32,10 +34,12 @@ body {
 }
 
 .logo {
+    font-family: "Bungee", sans-serif;
   background: linear-gradient(to right, #00ff87, #60efff, #00ff87);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
     font-size: 3rem;
+    font-weight: 700;
 }
 
 .slogan-container {
@@ -67,6 +71,9 @@ body {
   height: 3rem;
   border-radius: 0.5rem;
   gap: 0.5rem;
+    -webkit-user-select: none;      /* iOS Safari – no text selection */
+    -webkit-touch-callout: none;    /* iOS Safari – no “lookup” popup */
+    user-select: none;
 }
 
 .sub-button {
@@ -109,6 +116,10 @@ background: rgba(255, 77, 109, 0.85);
   height:100%
 }
 
+.sub-button, .unsub-button {
+    -webkit-tap-highlight-color: transparent;
+}
+
 .unsub-button:hover {
   background-color: rgba(230, 54, 90, 0.9);
 }
@@ -123,7 +134,7 @@ background: rgba(255, 77, 109, 0.85);
   padding: 1rem;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 1rem;
 }
 
 .paragraphBox {
