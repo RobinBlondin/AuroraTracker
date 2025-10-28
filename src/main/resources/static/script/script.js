@@ -1,23 +1,12 @@
-/* Initalize firebase messaging */
+const config = self.APP_CONFIG
+const keys = self.APP_KEYS;
 
-const firebaseConfig = {
-    apiKey: FIREBASE_API_KEY,
-    authDomain: FIREBASE_AUTH_DOMAIN,
-    projectId: FIREBASE_PROJECT_ID,
-    storageBucket: FIREBASE_STORAGE_BUCKET,
-    messagingSenderId: FIREBASE_MESSAGING_SENDER_ID,
-    appId: FIREBASE_APP_ID,
-    measurementId: FIREBASE_MEASUREMENT_ID
-};
-
-firebase.initializeApp(firebaseConfig);
+firebase.initializeApp(config);
 const messaging = firebase.messaging();
 
 navigator.serviceWorker.register("/sw.js").then((registration) => {
     messaging.useServiceWorker(registration);
 });
-
-
 
 /* ===== Leaflet map functions ===== */
 
@@ -109,7 +98,7 @@ async function subscribeWebPush(lat, lon) {
     if (!subscription) {
         subscription = await registration.pushManager.subscribe({
             userVisibleOnly: true,
-            applicationServerKey: urlBase64ToUint8Array(PUBLIC_KEY)
+            applicationServerKey: urlBase64ToUint8Array(keys.webPushVapidKey)
         });
     }
 
@@ -129,7 +118,7 @@ async function subscribeFCM(lat, lon) {
     if (permission !== "granted") throw new Error("Permission denied");
 
     const token = await messaging.getToken({
-        vapidKey: FIREBASE_KEY
+        vapidKey: keys.firebaseVapidKey
     });
 
     return {
