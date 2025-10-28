@@ -1,3 +1,24 @@
+/* Initalize firebase messaging */
+
+const firebaseConfig = {
+    apiKey: FIREBASE_API_KEY,
+    authDomain: FIREBASE_AUTH_DOMAIN,
+    projectId: FIREBASE_PROJECT_ID,
+    storageBucket: FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: FIREBASE_MESSAGING_SENDER_ID,
+    appId: FIREBASE_APP_ID,
+    measurementId: FIREBASE_MEASUREMENT_ID
+};
+
+firebase.initializeApp(firebaseConfig);
+const messaging = firebase.messaging();
+
+navigator.serviceWorker.register("/sw.js").then((registration) => {
+    messaging.useServiceWorker(registration);
+});
+
+
+
 /* ===== Leaflet map functions ===== */
 
 const map = L.map("map").setView([51.505, -0.09], 13);
@@ -82,7 +103,7 @@ function urlBase64ToUint8Array(base64String) {
 
 /* ===== Push notification logic ===== */
 
-const subscribe = async (lat, lon) => {
+async function subscribeWebPush(lat, lon) {
     const registration = await navigator.serviceWorker.ready;
     let subscription = await registration.pushManager.getSubscription();
     if (!subscription) {
@@ -91,16 +112,47 @@ const subscribe = async (lat, lon) => {
             applicationServerKey: urlBase64ToUint8Array(PUBLIC_KEY)
         });
     }
+
     const push = subscription.toJSON();
     return {
-        endPoint: push.endpoint,
+        endpoint: push.endpoint,
         auth: push.keys.auth,
         p256dh: push.keys.p256dh,
         userId: localStorage.getItem("userId"),
-        lat: lat,
-        lon: lon,
+        lat,
+        lon,
     };
+}
+
+async function subscribeFCM(lat, lon) {
+    const permission = await Notification.requestPermission();
+    if (permission !== "granted") throw new Error("Permission denied");
+
+    const token = await messaging.getToken({
+        vapidKey: FIREBASE_KEY
+    });
+
+    return {
+        firebaseToken: token,
+        userId: localStorage.getItem("userId"),
+        lat,
+        lon,
+    };
+}
+
+const subscribe = async (lat, lon) => {
+    let payload = null;
+
+    if (isChrome()) {
+        payload = await subscribeFCM(lat, lon);
+    } else {
+        payload = await subscribeWebPush(lat, lon);
+    }
+
+    return payload;
 };
+
+
 
 async function saveSubscription(data) {
     const res = await fetch("/api/subscriptions/subscribe", {
@@ -151,7 +203,12 @@ function createPositionString(lat, lon) {
     )}, Longitude: ${lon.toFixed(4)}`;
 }
 
+function isChrome() {
+    return /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor);
+}
+
 document.addEventListener("DOMContentLoaded", async () => {
+    console.log("script laddat")
     let userId = localStorage.getItem("userId");
     if (!userId) {
         userId = crypto.randomUUID();
