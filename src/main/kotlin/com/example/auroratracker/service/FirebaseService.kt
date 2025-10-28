@@ -37,8 +37,8 @@ class FirebaseService {
             }
       }
 
-      fun sendNotification(token: String, title: String, body: String) {
-            val notification = Notification.builder().setTitle(title).setBody(body).build()
+      fun sendNotification(token: String) {
+            val notification = Notification.builder().setTitle("Aurora Alert").setBody("Aurora activity has been detected near your location!").build()
 
             val message = Message.builder()
                   .setToken(token)

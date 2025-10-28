@@ -28,7 +28,7 @@ class PushNotificationController(
 
             for (sub in subs) {
                   if(sub.firebaseToken != null) {
-                        firebaseService.sendNotification(sub.firebaseToken!!, "Aurora Alert", "Test")
+                        firebaseService.sendNotification(sub.firebaseToken!!)
                   } else {
                         webPushService.sendNotification(sub.endpoint, sub.p256dh, sub.auth, "")
                   }
@@ -43,7 +43,7 @@ class PushNotificationController(
                   subscriptionService.getSubByUserId(userId).orElse(null) ?: return ResponseEntity.notFound().build()
 
             if(sub.firebaseToken != null) {
-                  firebaseService.sendNotification(sub.firebaseToken!!, "Aurora Alert", "Test")
+                  firebaseService.sendNotification(sub.firebaseToken!!)
             } else {
                   webPushService.sendNotification(sub.endpoint, sub.p256dh, sub.auth, "")
             }

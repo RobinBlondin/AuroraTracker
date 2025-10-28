@@ -113,8 +113,9 @@ class TrackingService(
                   }
 
                   if (shouldNotify) {
+                        log.info("Notification sent to user ${sub.userId} - Lat: ${sub.lat}, Lon: ${sub.lon} at ${LocalDateTime.now()}")
                         if(sub.firebaseToken != null) {
-                              firebaseService.sendNotification(sub.firebaseToken!!, "Aurora Alert", "Test")
+                              firebaseService.sendNotification(sub.firebaseToken!!)
                         } else {
                               webPushService.sendNotification(sub.endpoint, sub.p256dh, sub.auth, "")
                         }
