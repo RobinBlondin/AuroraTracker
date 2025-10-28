@@ -1,7 +1,9 @@
 package com.example.auroratracker.controller
 
-import com.example.auroratracker.service.PushNotificationService
+import com.example.auroratracker.service.FirebaseService
+import com.example.auroratracker.service.WebPushService
 import com.example.auroratracker.service.SubscriptionService
+import com.google.firebase.messaging.FirebaseMessaging
 import io.github.cdimascio.dotenv.Dotenv
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
@@ -13,7 +15,8 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/api/push")
 class PushNotificationController(
       private val subscriptionService: SubscriptionService,
-      private val pushNotificationService: PushNotificationService,
+      private val webPushService: WebPushService,
+      private val firebaseService: FirebaseService
 ) {
 
       private val dotenv = Dotenv.configure().ignoreIfMissing().load()
@@ -24,7 +27,11 @@ class PushNotificationController(
             val subs = subscriptionService.getAllSubs()
 
             for (sub in subs) {
-                  pushNotificationService.sendNotification(sub.endPoint, sub.p256dh, sub.auth, "")
+                  if(sub.firebaseToken != null) {
+                        firebaseService.sendNotification(sub.firebaseToken!!, "Aurora Alert", "Test")
+                  } else {
+                        webPushService.sendNotification(sub.endpoint, sub.p256dh, sub.auth, "")
+                  }
             }
             return ResponseEntity.ok("Success")
       }
@@ -35,7 +42,11 @@ class PushNotificationController(
             val sub =
                   subscriptionService.getSubByUserId(userId).orElse(null) ?: return ResponseEntity.notFound().build()
 
-            pushNotificationService.sendNotification(sub.endPoint, sub.p256dh, sub.auth, "")
+            if(sub.firebaseToken != null) {
+                  firebaseService.sendNotification(sub.firebaseToken!!, "Aurora Alert", "Test")
+            } else {
+                  webPushService.sendNotification(sub.endpoint, sub.p256dh, sub.auth, "")
+            }
 
             return ResponseEntity.ok("Success")
       }

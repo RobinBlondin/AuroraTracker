@@ -16,7 +16,8 @@ import kotlin.math.*
 class TrackingService(
       private val jsonService: JsonService,
       private val subscriptionService: SubscriptionService,
-      private val pushNotificationService: PushNotificationService
+      private val webPushService: WebPushService,
+      private val firebaseService: FirebaseService
 ) {
       private val dotenv = Dotenv.configure().ignoreIfMissing().load()
       private val log = LoggerFactory.getLogger(this::class.java)
@@ -93,7 +94,6 @@ class TrackingService(
             for (sub in subs) {
                   if (!subscriptionService.isAfterSunsetAndClearSky(sub)) continue
                   if (subscriptionService.hasUserReceivedNotificationRecently(sub)) continue
-                  if(sub.endPoint.isNullOrEmpty() || sub.p256dh.isNullOrEmpty() || sub.auth.isNullOrEmpty()) continue
 
                   val nearby = points.filter { p ->
                         distanceBetweenUsersAndAuroraPointInMeters(
@@ -113,7 +113,11 @@ class TrackingService(
                   }
 
                   if (shouldNotify) {
-                        pushNotificationService.sendNotification(sub.endPoint, sub.p256dh, sub.auth, "")
+                        if(sub.firebaseToken != null) {
+                              firebaseService.sendNotification(sub.firebaseToken!!, "Aurora Alert", "Test")
+                        } else {
+                              webPushService.sendNotification(sub.endpoint, sub.p256dh, sub.auth, "")
+                        }
                   }
             }
       }
