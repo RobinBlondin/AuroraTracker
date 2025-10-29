@@ -9,14 +9,23 @@ self.addEventListener("activate", (event) => {
 });
 
 self.addEventListener("push", (event) => {
-    if(!event.data) return;
-    const title =  "Aurora Alert";
+    if (!event.data) return;
+    let data = {};
+    try {
+        data = event.data.json();
+    } catch {
+        data = { body: event.data.text() };
+    }
+
+    const title = data.title || "Aurora Alert";
     const options = {
-        body:  "Aurora activity has been detected near your location!",
+        body: data.body || "Aurora activity has been detected near your location!",
         icon: "/images/icon-192.png",
         badge: "/images/icon-192.png",
-        data:  "/"
+        data: data.url || "/",
+        tag: "aurora_alert" // prevents stacking
     };
+
     event.waitUntil(self.registration.showNotification(title, options));
 });
 
@@ -25,18 +34,11 @@ self.addEventListener("notificationclick", (event) => {
     event.waitUntil(clients.openWindow(event.notification.data));
 });
 
-/* For Chrome users via FCM */
-importScripts('/config.js');
+importScripts("/config.js");
 importScripts("https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js");
 importScripts("https://www.gstatic.com/firebasejs/10.12.0/firebase-messaging-compat.js");
 
 firebase.initializeApp(self.APP_CONFIG);
-
 const messaging = firebase.messaging();
 
-messaging.onBackgroundMessage(payload => {
-    if(!payload || !payload.notification) return
-    const { title, body } = payload.notification;
-    self.registration.showNotification(title, { body });
-});
-
+messaging.onBackgroundMessage(() => {});

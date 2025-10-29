@@ -31,7 +31,7 @@ function placeMarker(lat, lon) {
         popupAnchor: [1, -34]
     });
 
-    currentMarker = L.marker([lat, lon], { icon }).addTo(map);
+    currentMarker = L.marker([lat, lon], {icon}).addTo(map);
     map.setView([lat, lon]);
 }
 
@@ -138,17 +138,33 @@ async function subscribeFCM(lat, lon) {
 }
 
 const subscribe = async (lat, lon) => {
-    let payload = null;
+    try {
+        const geoPermission = await navigator.permissions.query({name: "geolocation"});
+        if (geoPermission.state !== "granted") {
+            await new Promise((resolve, reject) => {
+                navigator.geolocation.getCurrentPosition(
+                    () => resolve(),
+                    (err) => reject(err)
+                );
+            });
+        }
 
-    if (isChrome()) {
-        payload = await subscribeFCM(lat, lon);
-    } else {
-        payload = await subscribeWebPush(lat, lon);
+        const notifPermission = await Notification.requestPermission();
+        if (notifPermission !== "granted") {
+            throw new Error("Notifications not granted by user");
+        }
+        let payload = null;
+
+        if (isChrome()) {
+            payload = await subscribeFCM(lat, lon);
+        } else {
+            payload = await subscribeWebPush(lat, lon);
+        }
+        return payload;
+    } catch (err) {
+        console.error(err)
     }
-
-    return payload;
 };
-
 
 
 async function saveSubscription(data) {
@@ -195,7 +211,7 @@ const fetchUserDataAndUpdateElements = async (userId) => {
 };
 
 function createPositionString(lat, lon) {
-    return  `Latitude: ${lat.toFixed(
+    return `Latitude: ${lat.toFixed(
         4
     )}, Longitude: ${lon.toFixed(4)}`;
 }

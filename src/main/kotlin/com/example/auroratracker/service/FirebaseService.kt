@@ -40,25 +40,11 @@ class FirebaseService {
       }
 
       fun sendNotification(token: String) {
-            val notification = Notification.builder()
-                  .setTitle("Aurora Alert")
-                  .setBody("Aurora activity has been detected near your location!")
-                  .setImage("/images/icon-192.png")
-                  .build()
-
-            val androidNotification = AndroidNotification.builder()
-                  .setTag("aurora_alert")
-                  .build()
-
-            val androidConfig = AndroidConfig.builder()
-                  .setNotification(androidNotification)
-                  .setCollapseKey("aurora_alert")
-                  .build()
-
             val message = Message.builder()
                   .setToken(token)
-                  .setNotification(notification)
-                  .setAndroidConfig(androidConfig)
+                  .putData("title", "Aurora Alert")
+                  .putData("body", "Aurora activity detected near your location!")
+                  .putData("image", "/images/icon-192.png")
                   .build()
 
             try {
