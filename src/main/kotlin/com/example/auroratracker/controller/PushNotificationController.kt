@@ -32,7 +32,7 @@ class PushNotificationController(
                   if(sub.firebaseToken != null) {
                         firebaseService.sendNotification(sub.firebaseToken!!)
                   } else {
-                        webPushService.sendNotification(sub.endpoint, sub.p256dh, sub.auth, "")
+                        webPushService.sendNotification(sub.endpoint, sub.p256dh, sub.auth)
                   }
             }
             return ResponseEntity.ok("Success")
@@ -49,7 +49,7 @@ class PushNotificationController(
             if(sub.firebaseToken != null) {
                   firebaseService.sendNotification(sub.firebaseToken!!)
             } else {
-                  webPushService.sendNotification(sub.endpoint, sub.p256dh, sub.auth, "")
+                  webPushService.sendNotification(sub.endpoint, sub.p256dh, sub.auth)
             }
 
             return ResponseEntity.ok("Success")
