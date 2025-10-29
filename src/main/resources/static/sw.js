@@ -23,7 +23,7 @@ self.addEventListener("push", (event) => {
         icon: "/images/icon-192.png",
         badge: "/images/icon-192.png",
         data: data.url || "/",
-        tag: "aurora_alert" // prevents stacking
+        tag: "aurora_alert"
     };
 
     event.waitUntil(self.registration.showNotification(title, options));
