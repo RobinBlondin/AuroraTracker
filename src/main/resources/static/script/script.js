@@ -10,11 +10,12 @@ navigator.serviceWorker.register("/sw.js").then((registration) => {
 
 /* ===== Leaflet map functions ===== */
 
-const map = L.map("map").setView([51.505, -0.09], 13);
+const map = L.map("map").setView([51.505, -0.09], 18);
 
-L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
-    maxZoom: 20,
-    attribution: "OpenStreetMap",
+L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+    attribution: '&copy; <a href="https://carto.com/attributions">CARTO</a>',
+    subdomains: 'abcd',
+    maxZoom: 19
 }).addTo(map);
 
 let currentMarker = null;
@@ -23,7 +24,14 @@ function placeMarker(lat, lon) {
     if (currentMarker) {
         map.removeLayer(currentMarker);
     }
-    currentMarker = L.marker([lat, lon]).addTo(map);
+    const icon = L.icon({
+        iconUrl: '/images/pin-icon.png',
+        iconSize: [41, 41],
+        iconAnchor: [12, 41],
+        popupAnchor: [1, -34]
+    });
+
+    currentMarker = L.marker([lat, lon], { icon }).addTo(map);
     map.setView([lat, lon]);
 }
 
