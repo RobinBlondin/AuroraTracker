@@ -10,7 +10,7 @@ navigator.serviceWorker.register("/sw.js").then((registration) => {
 
 /* ===== Leaflet map functions ===== */
 
-const map = L.map("map").setView([51.505, -0.09], 18);
+const map = L.map("map").setView([51.505, -0.09], 12);
 
 L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
     attribution: '&copy; <a href="https://carto.com/attributions">CARTO</a>',
