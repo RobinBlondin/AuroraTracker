@@ -3,6 +3,8 @@ package com.example.auroratracker.service
 import com.google.auth.oauth2.GoogleCredentials
 import com.google.firebase.FirebaseApp
 import com.google.firebase.FirebaseOptions
+import com.google.firebase.messaging.AndroidConfig
+import com.google.firebase.messaging.AndroidNotification
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.messaging.Message
 import com.google.firebase.messaging.Notification
@@ -38,11 +40,25 @@ class FirebaseService {
       }
 
       fun sendNotification(token: String) {
-            val notification = Notification.builder().setTitle("Aurora Alert").setBody("Aurora activity has been detected near your location!").build()
+            val notification = Notification.builder()
+                  .setTitle("Aurora Alert")
+                  .setBody("Aurora activity has been detected near your location!")
+                  .setImage("/images/icon-192.png")
+                  .build()
+
+            val androidNotification = AndroidNotification.builder()
+                  .setTag("aurora_alert")
+                  .build()
+
+            val androidConfig = AndroidConfig.builder()
+                  .setNotification(androidNotification)
+                  .setCollapseKey("aurora_alert")
+                  .build()
 
             val message = Message.builder()
                   .setToken(token)
                   .setNotification(notification)
+                  .setAndroidConfig(androidConfig)
                   .build()
 
             try {
