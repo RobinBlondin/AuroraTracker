@@ -11,12 +11,15 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider
 import org.springframework.stereotype.Service
 import java.io.ByteArrayInputStream
 import java.nio.charset.StandardCharsets
+import java.nio.file.Files
+import java.nio.file.Paths
 import java.security.Security
 
 
 @Service
 class WebPushService {
       private val dotenv = Dotenv.configure().ignoreIfMissing().load()
+
       init {
             Security.addProvider(BouncyCastleProvider())
       }
@@ -26,15 +29,18 @@ class WebPushService {
       private val subject = dotenv["VAPID_SUBJECT"] ?: "mailto:robin.blondin@gmail.com"
       private val pushService = PushService(publicKey, privateKey, subject)
 
-      fun sendNotification(endpoint: String?, p256dh: String?, auth: String?, message: String) {
-                  try {
-                        val subscription = Subscription(endpoint, Subscription.Keys(p256dh, auth))
-                        val notification = Notification(subscription, message)
-                        val response = pushService.send(notification)
-                        println("Push response: ${response.statusLine}")
-                  } catch (e: Exception) {
-                        println("Push  Error: ${e.message}")
-                        e.printStackTrace()
-                  }
+      fun sendNotification(endpoint: String?, p256dh: String?, auth: String?) {
+            try {
+                  val path = Paths.get(javaClass.classLoader.getResource("message.json")!!.toURI())
+                  val payload =  Files.readString(path)
+
+                  val subscription = Subscription(endpoint, Subscription.Keys(p256dh, auth))
+                  val notification = Notification(subscription, payload)
+                  val response = pushService.send(notification)
+                  println("Push response: ${response.statusLine}")
+            } catch (e: Exception) {
+                  println("Push  Error: ${e.message}")
+                  e.printStackTrace()
+            }
       }
 }
