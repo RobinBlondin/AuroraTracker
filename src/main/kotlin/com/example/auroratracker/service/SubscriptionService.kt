@@ -73,7 +73,7 @@ class SubscriptionService(
       }
 
 
-      fun hasUserReceivedNotificationRecently(dto: SubscriptionDto): Boolean {
+      fun hasReceivedNotificationRecently(dto: SubscriptionDto): Boolean {
             return dto.lastNotificationTime?.let {
                   ZonedDateTime.now(ZoneOffset.UTC).minusHours(12).isBefore(it)
             } ?: false
