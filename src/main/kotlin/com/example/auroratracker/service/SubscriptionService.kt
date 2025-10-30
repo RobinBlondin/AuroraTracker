@@ -1,6 +1,7 @@
 package com.example.auroratracker.service
 
 import com.example.auroratracker.dto.SubscriptionDto
+import com.example.auroratracker.dto.SubscriptionLiteDto
 import com.example.auroratracker.dto.WeatherResponseDto
 import com.example.auroratracker.mapper.SubscriptionMapper
 import com.example.auroratracker.repository.SubscriptionRepository
@@ -64,6 +65,8 @@ class SubscriptionService(
 
             return isAfterSunset && isClearSky
       }
+
+      fun toLiteDto(dto: SubscriptionDto): SubscriptionLiteDto = SubscriptionLiteDto(dto.lon, dto.lat, dto.lastNotificationTime)
 
       fun updateLastNotificationTime(dto: SubscriptionDto): SubscriptionDto {
             val updatedUser = mapper.toEntity(dto).apply {
