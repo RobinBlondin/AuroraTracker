@@ -6,9 +6,12 @@ import com.example.auroratracker.service.SubscriptionService
 import com.google.firebase.messaging.FirebaseMessaging
 import io.github.cdimascio.dotenv.Dotenv
 import org.slf4j.LoggerFactory
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
@@ -22,9 +25,11 @@ class PushNotificationController(
 
       private val dotenv = Dotenv.configure().ignoreIfMissing().load()
       private val log = LoggerFactory.getLogger(this::class.java)
+      private val secret = dotenv["PUSH_SECRET"]
 
-      @GetMapping("/all")
-      fun pushAll(): ResponseEntity<String> {
+      @PostMapping("/all")
+      fun pushAll(@RequestHeader(value = "X-Request-ID", required = false) providedSecret: String?): ResponseEntity<String> {
+            if(secret != providedSecret) return ResponseEntity(HttpStatus.UNAUTHORIZED)
 
             val subs = subscriptionService.getAllSubs()
 
@@ -38,8 +43,9 @@ class PushNotificationController(
             return ResponseEntity.ok("Success")
       }
 
-      @GetMapping("/{userId}")
-      fun pushUserById(@PathVariable userId: String): ResponseEntity<String> {
+      @PostMapping("/{userId}")
+      fun pushUserById(@RequestHeader(value = "X-Request-ID", required = false) providedSecret: String?, @PathVariable userId: String): ResponseEntity<String> {
+            if(secret != providedSecret) return ResponseEntity(HttpStatus.UNAUTHORIZED)
 
             val sub =
                   subscriptionService.getSubByUserId(userId).orElse(null) ?: return ResponseEntity.notFound().build()

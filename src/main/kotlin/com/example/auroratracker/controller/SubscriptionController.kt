@@ -1,7 +1,9 @@
 package com.example.auroratracker.controller
 
 import com.example.auroratracker.dto.SubscriptionDto
+import com.example.auroratracker.dto.SubscriptionLiteDto
 import com.example.auroratracker.service.SubscriptionService
+import io.github.cdimascio.dotenv.Dotenv
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -12,8 +14,15 @@ import java.time.LocalDateTime
 class SubscriptionController(
       private val subscriptionService: SubscriptionService
 ) {
+      private val dotenv = Dotenv.configure().ignoreIfMissing().load()
+      private val secret = dotenv["SECRET_KEY"]
+
       @PostMapping("subscribe")
-      fun subscribe(@RequestBody dto: SubscriptionDto): ResponseEntity<SubscriptionDto> {
+      fun subscribe(
+            @RequestHeader("X-Request-ID", required = false) providedSecret: String?,
+            @RequestBody dto: SubscriptionDto): ResponseEntity<SubscriptionDto> {
+            if (secret != providedSecret) return ResponseEntity(HttpStatus.FORBIDDEN)
+
             if (subscriptionService.checkIfSubExists(dto)) {
                   val sub = subscriptionService.getSubByUserId(dto.userId!!).orElse(null) ?: return ResponseEntity(
                         HttpStatus.NOT_FOUND
@@ -34,16 +43,26 @@ class SubscriptionController(
       }
 
       @DeleteMapping("unsubscribe/{userId}")
-      fun unsubscribe(@PathVariable userId: String): ResponseEntity<Boolean> {
+      fun unsubscribe(
+            @RequestHeader("X-Request-ID", required = false) providedSecret: String?,
+            @PathVariable userId: String
+      ): ResponseEntity<Boolean> {
+            if (secret != providedSecret) return ResponseEntity(HttpStatus.FORBIDDEN)
+
             val deleted = subscriptionService.deleteSubByUserId(userId)
             return ResponseEntity.ok(deleted)
       }
 
       @GetMapping("/{userId}")
-      fun getSubscription(@PathVariable userId: String): ResponseEntity<SubscriptionDto> {
+      fun getSubscription(
+            @RequestHeader("X-Request-ID", required = false) providedSecret: String?,
+            @PathVariable userId: String
+      ): ResponseEntity<SubscriptionLiteDto> {
+            if (secret != providedSecret) return ResponseEntity(HttpStatus.FORBIDDEN)
+
             val sub = subscriptionService.getSubByUserId(userId)
             if (sub.isPresent) {
-                  return ResponseEntity.ok(sub.get())
+                  return ResponseEntity.ok(subscriptionService.toLiteDto(sub.get()))
             }
             return ResponseEntity(HttpStatus.NOT_FOUND)
       }
