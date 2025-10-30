@@ -26,6 +26,7 @@ class ConfigController {
     self.APP_KEYS = {
       webPushVapidKey: "${dotenv.get("VAPID_PUBLIC_KEY")}",
       firebaseVapidKey: "${dotenv.get("FIREBASE_VAPID_KEY")}",
+      secretKey: "${dotenv.get("SECRET_KEY")}",
     };
   """.trimIndent()
 }
