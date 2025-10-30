@@ -67,6 +67,7 @@ const updateLocation = async () => {
             const lon = pos.coords.longitude;
             placeMarker(lat, lon);
             const subscription = await subscribe(lat, lon);
+            console.log("Subscription:", subscription)
             if (subscription == null) throw Error("Unsupported browser")
             await saveSubscription(subscription);
             toggleDisplayMap("block");
@@ -162,9 +163,9 @@ const subscribe = async (lat, lon) => {
 
         switch (type) {
             case 'fcm':
-                return await subscribeFCM()
+                return await subscribeFCM(lat, lon)
             case 'webpush':
-                return await subscribeWebPush()
+                return await subscribeWebPush(lat, lon)
             default:
                 return null
         }
@@ -200,26 +201,27 @@ async function unsubscribeServiceWorker() {
 /* ===== UI functions ===== */
 
 const fetchUserDataAndUpdateElements = async (userId) => {
-    const response = await fetch("/api/subscriptions/" + userId, {
-        headers: {
-            "X-Request-ID": keys.secretKey
+    try {
+        const response = await fetch(`/api/subscriptions/${userId}`, {
+            headers: { "X-Request-ID": keys.secretKey }
+        });
+
+        if (!response.ok) {
+            toggleDisplayMap("none");
+            return;
         }
-    });
-    if (response.status === 200) {
+
         const user = await response.json();
         placeMarker(user.lat, user.lon);
-
         if (user.lastNotificationTime) {
-            UI.setText(
-                ".notification-timestamp",
-                UI.formatDate(user.lastNotificationTime)
-            );
+            UI.setText(".notification-timestamp", UI.formatDate(user.lastNotificationTime));
         }
-
         UI.setText(".position-data", createPositionString(user.lat, user.lon));
-    } else {
+    } catch (err) {
+        console.error("Failed to fetch subscription:", err);
         toggleDisplayMap("none");
     }
+
 };
 
 function createPositionString(lat, lon) {
