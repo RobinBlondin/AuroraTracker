@@ -1,108 +1,119 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Aurora Tracker</title>
     <link
-      rel="stylesheet"
-      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
-      crossorigin=""
+            rel="stylesheet"
+            href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+            integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+            crossorigin=""
     />
-    <link rel="stylesheet" href="/css/index.css" />
-      <link rel="manifest" href="/manifest.json">
+    <link rel="stylesheet" href="/css/index.css"/>
+    <link rel="manifest" href="/manifest.json">
 
-  </head>
-  <body>
-    <div class="wrapper">
-      <header class="header">
+</head>
+<body>
+<div class="wrapper">
+    <header class="header">
         <p class="logo">Aurora Tracker</p>
         <div class="slogan-container">
-          <img
-            class="pin-icon"
-            src="/images/pin-icon.png"
-            alt="map location pin icon"
-          />
-          <p class="slogan">Chase the northern lights</p>
+            <img
+                    class="pin-icon"
+                    src="/images/pin-icon.png"
+                    alt="map location pin icon"
+            />
+            <p class="slogan">Chase the northern lights</p>
         </div>
-      </header>
-      <section class="map">
+    </header>
+    <section class="map">
         <div id="map"></div>
-      </section>
-      <section class="buttons">
+    </section>
+    <section class="buttons">
         <div class="sub-button" onclick="updateLocation()">
-          <img
-            class="button-icon"
-            src="/images/navigate-icon.png"
-            alt="Icon of a navigation arrow"
-          />
-          <p>Turn On Alerts</p>
+            <img
+                    class="button-icon"
+                    src="/images/navigate-icon.png"
+                    alt="Icon of a navigation arrow"
+            />
+            <p>Turn On Alerts</p>
         </div>
         <div class="unsub-button" onclick="unSubscribeOnLocation()">
-          <img
-            class="button-icon"
-            src="/images/trash-icon.png"
-            alt="trash icon"
-          />
-          <p>Turn Off Alerts</p>
+            <img
+                    class="button-icon"
+                    src="/images/trash-icon.png"
+                    alt="trash icon"
+            />
+            <p>Turn Off Alerts</p>
         </div>
-      </section>
-        <section class="info">
-            <h3>Get Notified When Auroras Appear</h3>
-            <ol>
-                <li>Open this page on your phone and add it to your home screen (that helps with notifications).</li>
-                <li>Tap “Turn On Alerts” and allow location and notification access when asked.</li>
-                <li>Your coordinates are stored securely so we can estimate aurora visibility in your area.</li>
-                <li>If auroras are likely, you’ll get a push notification. You only get one alert per event, but lights usually last for hours.</li>
-                <li>Tap the green button again if you move or travel. That updates your location.</li>
-                <li>Tap the red button to turn off alerts and be completely removed from our system.</li>
-            </ol>
-        </section>
-      <section class="info">
+    </section>
+    <section class="info"><h3>Get Notified When Auroras Appear</h3>
+        <ol>
+            <li>
+                <strong>Add to home screen:</strong><br><br>
+                <div style="margin-left: 1.5em">
+                    • On <strong>iPhone</strong> → open this page in <strong>Safari</strong> and  tap the <span style="white-space: nowrap;">Share <img
+                        src="/images/share-icon.png" alt="Share icon"
+                        style="height: 1em; vertical-align: middle;"></span> icon, then choose <em>Add to Home
+                    Screen</em><br><br>
+                    • On <strong>Android</strong> → open this page in <strong>Chrome</strong> and tap the <span style="white-space: nowrap;">⋮</span> menu in the
+                    top right and select <em>Add to Home screen</em>. Chrome might even suggest it automatically.
+                </div>
+            </li>
+            <li>Open the app and tap “Turn On Alerts” and allow location and notification access when asked.</li>
+            <li>Your coordinates are stored securely so we can estimate aurora visibility in your area.</li>
+            <li>If auroras are likely, you’ll get a push notification. You only get one alert per event, but lights
+                usually last for hours.
+            </li>
+            <li>Tap the green button again if you move or travel. That updates your location.</li>
+            <li>Tap the red button to turn off alerts and be completely removed from our system.</li>
+        </ol>
+    </section>
+    <section class="info">
         <h3>How Aurora Tracker Works</h3>
         <p>
-          Aurora Tracker keeps an eye on geomagnetic activity around the world
-          and alerts you when the Northern Lights might be visible from your
-          location.
+            Aurora Tracker keeps an eye on geomagnetic activity around the world
+            and alerts you when the Northern Lights might be visible from your
+            location.
         </p>
 
         <p>
-          The system gathers live data from space weather services and
-          calculates how far the auroral oval extends based on the current Kp
-          index, a global measure of geomagnetic disturbance.
+            The system gathers live data from space weather services and
+            calculates how far the auroral oval extends based on the current Kp
+            index, a global measure of geomagnetic disturbance.
         </p>
 
         <p>
-          Your position is compared to the edge of this auroral zone using
-          precise geographic formulas (yes, real math stolen from very skilled
-          mathematicians!). If conditions look promising, Aurora Tracker sends
-          you a notification so you don’t miss the show in the sky.
+            Your position is compared to the edge of this auroral zone using
+            precise geographic formulas (yes, real math stolen from very skilled
+            mathematicians!). If conditions look promising, Aurora Tracker sends
+            you a notification so you don’t miss the show in the sky.
         </p>
-      </section>
-      <section class="positions">
+    </section>
+    <section class="positions">
         <h3>Current Position Registered</h3>
         <div class="paragraphBox">
-          <p class="position-data">No current position selected</p>
+            <p class="position-data">No current position selected</p>
         </div>
-      </section>
-      <section class="timeStamp">
+    </section>
+    <section class="timeStamp">
         <h3>Last Notification Recieved</h3>
         <div class="paragraphBox">
-          <p class="notification-timestamp">No notifications received</p>
+            <p class="notification-timestamp">No notifications received</p>
         </div>
-      </section>
-    </div>
-    <script src="/config.js"></script>
-    <script src="/keys.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-messaging-compat.js"></script>
-    <script
-      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-      crossorigin=""
-    ></script>
+    </section>
+</div>
+<script src="/config.js"></script>
+<script src="/keys.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-messaging-compat.js"></script>
+<script
+        src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+        crossorigin=""
+></script>
 
-    <script src="/script/script.js"></script>
-  </body>
+<script src="/script/script.js"></script>
+</body>
 </html>
