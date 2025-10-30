@@ -23,8 +23,6 @@ class FirebaseService {
             val json = dotenv["FIREBASE_SERVICE_ACCOUNT"]
                   ?: ""
 
-            println(json)
-
             val credentials = GoogleCredentials.fromStream(json.byteInputStream(Charsets.UTF_8))
 
             val options = FirebaseOptions.builder()
