@@ -43,6 +43,9 @@ const unSubscribeOnLocation = async () => {
         "/api/subscriptions/unsubscribe/" + userId,
         {
             method: "DELETE",
+            headers: {
+                "X-Request-ID":keys.secretKey
+            }
         }
     );
 
@@ -64,6 +67,7 @@ const updateLocation = async () => {
             const lon = pos.coords.longitude;
             placeMarker(lat, lon);
             const subscription = await subscribe(lat, lon);
+            if (subscription == null) throw Error("Unsupported browser")
             await saveSubscription(subscription);
             toggleDisplayMap("block");
             UI.setText(".position-data", createPositionString(lat, lon))
@@ -153,14 +157,17 @@ const subscribe = async (lat, lon) => {
         if (notifPermission !== "granted") {
             throw new Error("Notifications not granted by user");
         }
-        let payload = null;
 
-        if (isChrome()) {
-            payload = await subscribeFCM(lat, lon);
-        } else {
-            payload = await subscribeWebPush(lat, lon);
+        const type = await getPushType()
+
+        switch (type) {
+            case 'fcm':
+                return await subscribeFCM()
+            case 'webpush':
+                return await subscribeWebPush()
+            default:
+                return null
         }
-        return payload;
     } catch (err) {
         console.error(err)
     }
@@ -170,7 +177,10 @@ const subscribe = async (lat, lon) => {
 async function saveSubscription(data) {
     const res = await fetch("/api/subscriptions/subscribe", {
         method: "POST",
-        headers: {"Content-Type": "application/json"},
+        headers: {
+            "Content-Type": "application/json",
+            "X-Request-ID": keys.secretKey
+        },
         body: JSON.stringify(data),
     });
 
@@ -183,16 +193,18 @@ async function unsubscribeServiceWorker() {
     const existing = await registration.pushManager.getSubscription();
     if (existing) {
         await existing.unsubscribe();
-        console.log("Old subscription removed");
     }
-
     return registration
 }
 
 /* ===== UI functions ===== */
 
 const fetchUserDataAndUpdateElements = async (userId) => {
-    const response = await fetch("/api/subscriptions/" + userId);
+    const response = await fetch("/api/subscriptions/" + userId, {
+        headers: {
+            "X-Request-ID": keys.secretKey
+        }
+    });
     if (response.status === 200) {
         const user = await response.json();
         placeMarker(user.lat, user.lon);
@@ -216,12 +228,33 @@ function createPositionString(lat, lon) {
     )}, Longitude: ${lon.toFixed(4)}`;
 }
 
-function isChrome() {
-    return /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor);
+async function getPushType() {
+    if (navigator.userAgentData?.brands) {
+        const brands = navigator.userAgentData.brands.map(b => b.brand);
+        if (brands.some(b => /Chromium|Google Chrome|Microsoft Edge|Brave|Opera/i.test(b))) {
+            return 'fcm';
+        }
+    }
+
+    const ua = navigator.userAgent;
+    const vendor = navigator.vendor || '';
+
+    if (/Safari/i.test(ua) && /Apple/i.test(vendor) && !/Chrom(e|ium)/i.test(ua)) {
+        return 'webpush';
+    }
+
+    if (/Firefox/i.test(ua)) {
+        return 'webpush';
+    }
+
+    if (/Chrom(e|ium)/i.test(ua)) {
+        return 'fcm';
+    }
+
+    return 'unsupported';
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
-    console.log("script laddat")
     let userId = localStorage.getItem("userId");
     if (!userId) {
         userId = crypto.randomUUID();
@@ -229,8 +262,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     await navigator.serviceWorker.register("/sw.js");
-    console.log("SW registered");
-
     await navigator.serviceWorker.ready;
     await fetchUserDataAndUpdateElements(userId);
 });
