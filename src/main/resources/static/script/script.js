@@ -37,6 +37,7 @@ function placeMarker(lat, lon) {
 
 const unSubscribeOnLocation = async () => {
     let userId = localStorage.getItem("userId");
+    toggleButtonColors("green")
     await unsubscribeServiceWorker()
 
     const response = await fetch(
@@ -61,13 +62,14 @@ const toggleDisplayMap = (style) => {
 };
 
 const updateLocation = async () => {
+    toggleButtonColors("red")
     navigator.geolocation.getCurrentPosition(
         async (pos) => {
             const lat = pos.coords.latitude;
             const lon = pos.coords.longitude;
             placeMarker(lat, lon);
             const subscription = await subscribe(lat, lon);
-            console.log("Subscription:", subscription)
+
             if (subscription == null) throw Error("Unsupported browser")
             await saveSubscription(subscription);
             toggleDisplayMap("block");
@@ -208,11 +210,13 @@ const fetchUserDataAndUpdateElements = async (userId) => {
 
         if (!response.ok) {
             toggleDisplayMap("none");
+            toggleButtonColors("green")
             return;
         }
 
         const user = await response.json();
         placeMarker(user.lat, user.lon);
+        toggleButtonColors("red")
         if (user.lastNotificationTime) {
             UI.setText(".notification-timestamp", UI.formatDate(user.lastNotificationTime));
         }
@@ -221,8 +225,29 @@ const fetchUserDataAndUpdateElements = async (userId) => {
         console.error("Failed to fetch subscription:", err);
         toggleDisplayMap("none");
     }
-
 };
+
+function toggleButtonColors(active) {
+    const greenButton = document.querySelector(".sub-button");
+    const redButton = document.querySelector(".unsub-button");
+
+    if (active === "green") {
+        greenButton.style.backgroundColor = "#00f5a0";
+        greenButton.style.boxShadow =
+            "0 0 6px rgba(0, 255, 160, 0.4), 0 0 12px rgba(0, 255, 160, 0.2)";
+
+        redButton.style.backgroundColor = "#7a2222";
+        redButton.style.boxShadow = "none";
+    } else {
+        greenButton.style.backgroundColor = "#006b49";
+        greenButton.style.boxShadow = "none";
+
+        redButton.style.backgroundColor = "#ff4b4b";
+        redButton.style.boxShadow =
+            "0 0 6px rgba(255, 75, 75, 0.5), 0 0 12px rgba(255, 75, 75, 0.3)";
+    }
+}
+
 
 function createPositionString(lat, lon) {
     return `Latitude: ${lat.toFixed(
@@ -254,6 +279,28 @@ async function getPushType() {
     }
 
     return 'unsupported';
+}
+async function drawHeatLayer() {
+    const data = await fetchAuroraPoints();
+    const points = data.map(p => [p.lat, p.lon, p.probability / 100]);
+
+    L.heatLayer(points, {
+        radius: 30,
+        blur: 25,
+        maxZoom: 6,
+        gradient: {
+            0.2: 'transparent',
+            0.4: '#32CD32',
+            0.6: '#00FF7F',
+            0.8: '#ADFF2F',
+            1.0: '#C0FF00'
+        }
+    }).addTo(map)
+}
+
+async function fetchAuroraPoints() {
+    const response = await fetch("/api/points/all")
+    return await response.json()
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
