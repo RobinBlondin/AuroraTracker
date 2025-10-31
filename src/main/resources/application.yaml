@@ -21,3 +21,38 @@ logging:
 
 server:
   address: 0.0.0.0
+
+env:
+  api:
+    url:
+      noaa: ${API_URL_NOAA}
+      kp: ${API_URL_KP}
+      met: ${API_URL_MET}
+
+  db:
+    url: ${DB_URL}
+    user: ${DB_USER}
+    password: ${DB_PASSWORD}
+
+  vapid:
+    subject: ${VAPID_SUBJECT}
+    public-key: ${VAPID_PUBLIC_KEY}
+    private-key: ${VAPID_PRIVATE_KEY}
+
+  firebase:
+    service-account: ${FIREBASE_SERVICE_ACCOUNT}
+    vapid-key: ${FIREBASE_VAPID_KEY}
+    api-key: ${FIREBASE_API_KEY}
+    auth-domain: ${FIREBASE_AUTH_DOMAIN}
+    project-id: ${FIREBASE_PROJECT_ID}
+    storage-bucket: ${FIREBASE_STORAGE_BUCKET}
+    messaging-sender-id: ${FIREBASE_MESSAGING_SENDER_ID}
+    app-id: ${FIREBASE_APP_ID}
+    measurement-id: ${FIREBASE_MEASUREMENT_ID}
+
+  secrets:
+    push: ${SECRET_PUSH}
+    key: ${SECRET_KEY}
+
+
+

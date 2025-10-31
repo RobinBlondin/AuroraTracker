@@ -1,30 +1,25 @@
 package com.example.auroratracker.service
 
+import com.example.auroratracker.config.EnvConfig
 import com.google.auth.oauth2.GoogleCredentials
 import com.google.firebase.FirebaseApp
 import com.google.firebase.FirebaseOptions
-import com.google.firebase.messaging.AndroidConfig
-import com.google.firebase.messaging.AndroidNotification
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.messaging.Message
-import com.google.firebase.messaging.Notification
-import io.github.cdimascio.dotenv.Dotenv
 import org.springframework.stereotype.Service
 
 @Service
-class FirebaseService {
-      private val dotenv = Dotenv.configure().ignoreIfMissing().load()
+class FirebaseService(
+      private val env: EnvConfig
+) {
 
       init {
             initializeFirebase()
       }
 
       private fun initializeFirebase() {
-            val json = dotenv["FIREBASE_SERVICE_ACCOUNT"]
-                  ?: ""
-
+            val json = env.firebase.serviceAccount
             val credentials = GoogleCredentials.fromStream(json.byteInputStream(Charsets.UTF_8))
-
             val options = FirebaseOptions.builder()
                   .setCredentials(credentials)
                   .build()

@@ -1,10 +1,11 @@
 package com.example.auroratracker.service
 
+import com.example.auroratracker.config.EnvConfig
 import com.example.auroratracker.domain.Thresholds
 import com.example.auroratracker.dto.AuroraBelt
 import com.example.auroratracker.dto.AuroraPoint
 import com.example.auroratracker.dto.KpIndexDto
-import io.github.cdimascio.dotenv.Dotenv
+import com.example.auroratracker.entity.Notification
 import kotlinx.coroutines.runBlocking
 import org.slf4j.LoggerFactory
 import org.springframework.scheduling.annotation.Scheduled
@@ -17,9 +18,10 @@ class TrackingService(
       private val jsonService: JsonService,
       private val subscriptionService: SubscriptionService,
       private val webPushService: WebPushService,
-      private val firebaseService: FirebaseService
+      private val firebaseService: FirebaseService,
+      private val notificationService: NotificationService,
+      private val env: EnvConfig
 ) {
-      private val dotenv = Dotenv.configure().ignoreIfMissing().load()
       private val log = LoggerFactory.getLogger(this::class.java)
 
       companion object {
@@ -56,7 +58,7 @@ class TrackingService(
       }
 
       fun getAuroraPoints(): List<AuroraPoint> {
-            val url = dotenv.get("API_URL_NOAA") ?: ""
+            val url = env.api.url.noaa
             val response = jsonService.fetchAndParse<AuroraBelt>(url)
             val auroraBelt = response.getOrElse {
                   println("Failed to fetch or parse aurora points: ${it.message}")
@@ -66,7 +68,7 @@ class TrackingService(
       }
 
       fun getKpIndex(): Int? {
-            val url = dotenv.get("API_URL_KP") ?: ""
+            val url = env.api.url.kp
             val response = jsonService.fetchAndParse<List<KpIndexDto>>(url)
             val result = response.getOrElse {
                   println("Failed to fetch or parse Kp index: ${it.message}")
@@ -113,13 +115,13 @@ class TrackingService(
                   }
 
                   if (shouldNotify) {
-                        log.info("Notification sent to user ${sub.userId} - Lat: ${sub.lat}, Lon: ${sub.lon} at ${LocalDateTime.now()}")
                         if(sub.firebaseToken != null) {
                               firebaseService.sendNotification(sub.firebaseToken!!)
                         } else {
                               webPushService.sendNotification(sub.endpoint, sub.p256dh, sub.auth)
                         }
                         subscriptionService.updateLastNotificationTime(sub)
+                        notificationService.add(Notification(userId = sub.userId, lat = sub.lat, lon = sub.lon))
                   }
             }
       }

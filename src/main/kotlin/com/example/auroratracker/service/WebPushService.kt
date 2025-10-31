@@ -1,35 +1,30 @@
 package com.example.auroratracker.service
 
-import com.google.auth.oauth2.GoogleCredentials
-import com.google.firebase.FirebaseApp
-import com.google.firebase.FirebaseOptions
-import io.github.cdimascio.dotenv.Dotenv
+import com.example.auroratracker.config.EnvConfig
 import nl.martijndwars.webpush.Notification
 import nl.martijndwars.webpush.PushService
 import nl.martijndwars.webpush.Subscription
 import org.bouncycastle.jce.provider.BouncyCastleProvider
 import org.springframework.stereotype.Service
-import java.io.ByteArrayInputStream
-import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 import java.nio.file.Paths
 import java.security.Security
 
-
 @Service
-class WebPushService {
-      private val dotenv = Dotenv.configure().ignoreIfMissing().load()
+class WebPushService(
+      private val env: EnvConfig
+) {
 
       init {
             Security.addProvider(BouncyCastleProvider())
       }
 
-      private val publicKey = dotenv["VAPID_PUBLIC_KEY"] ?: ""
-      private val privateKey = dotenv["VAPID_PRIVATE_KEY"] ?: ""
-      private val subject = dotenv["VAPID_SUBJECT"] ?: "mailto:robin.blondin@gmail.com"
-      private val pushService = PushService(publicKey, privateKey, subject)
-
       fun sendNotification(endpoint: String?, p256dh: String?, auth: String?) {
+             val publicKey = env.vapid.publicKey
+             val privateKey = env.vapid.privateKey
+             val subject = env.vapid.subject
+             val pushService = PushService(publicKey, privateKey, subject)
+
             try {
                   val path = Paths.get(javaClass.classLoader.getResource("message.json")!!.toURI())
                   val payload =  Files.readString(path)
