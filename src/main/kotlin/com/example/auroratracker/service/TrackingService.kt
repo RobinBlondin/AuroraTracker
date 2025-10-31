@@ -64,10 +64,10 @@ class TrackingService(
                   println("Failed to fetch or parse aurora points: ${it.message}")
                   AuroraBelt()
             }
-            return auroraBelt.convertToAuroraPoints()
+            return auroraBelt.convertToAuroraPoints().filter { it.lat >= 30 }
       }
 
-      fun getKpIndex(): Int? {
+      fun getKpIndex(current: Boolean = false): Int? {
             val url = env.api.url.kp
             val response = jsonService.fetchAndParse<List<KpIndexDto>>(url)
             val result = response.getOrElse {
@@ -78,6 +78,8 @@ class TrackingService(
             if (result.isEmpty()) {
                   return null
             }
+
+            if(current) return result.lastOrNull { it.kpIndex != null }?.kpIndex
 
             val indexesOfLastHour = result.takeLast(60).mapNotNull { it.kpIndex }
 
