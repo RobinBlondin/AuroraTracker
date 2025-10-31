@@ -13,13 +13,9 @@ class IndexController(
 ) {
       @GetMapping("/")
       fun index(model: Model): String {
-            val today = notificationService.countToday()
-            val total = notificationService.countTotal()
-            val kp = trackingService.getKpIndex()
+            val kp = trackingService.getKpIndex(true)
 
             model.addAttribute("kp", kp)
-            model.addAttribute("total", total)
-            model.addAttribute("today", today)
 
             return "index"
       }
