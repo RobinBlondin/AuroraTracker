@@ -62,21 +62,41 @@ const toggleDisplayMap = (style) => {
 };
 
 const updateLocation = async () => {
-    toggleButtonColors("red")
+    toggleButtonColors("red");
+
     navigator.geolocation.getCurrentPosition(
         async (pos) => {
             const lat = pos.coords.latitude;
             const lon = pos.coords.longitude;
+
             placeMarker(lat, lon);
             const subscription = await subscribe(lat, lon);
 
-            if (subscription == null) throw Error("Unsupported browser")
+            if (subscription == null) throw Error("Unsupported browser");
+
             await saveSubscription(subscription);
             toggleDisplayMap("block");
-            UI.setText(".position-data", createPositionString(lat, lon))
+            UI.setText(".position-data", createPositionString(lat, lon));
         },
         (err) => {
-            console.error(err);
+            console.error("Geolocation error:", err);
+
+            switch (err.code) {
+                case err.PERMISSION_DENIED:
+                    showMapWarning("Location access denied. Turn on location to enable alerts.", 6000);
+                    break;
+                case err.POSITION_UNAVAILABLE:
+                    showMapWarning("Unable to retrieve location. Check your GPS or connection.", 6000);
+                    break;
+                case err.TIMEOUT:
+                    showMapWarning("Location request timed out. Try again.", 6000);
+                    break;
+                default:
+                    showMapWarning("An unknown error occurred while getting location.", 6000);
+                    break;
+            }
+
+            toggleButtonColors("green");
         }
     );
 };
@@ -148,33 +168,26 @@ async function subscribeFCM(lat, lon) {
 
 const subscribe = async (lat, lon) => {
     try {
-        const geoPermission = await navigator.permissions.query({name: "geolocation"});
-        if (geoPermission.state !== "granted") {
-            await new Promise((resolve, reject) => {
-                navigator.geolocation.getCurrentPosition(
-                    () => resolve(),
-                    (err) => reject(err)
-                );
-            });
-        }
-
         const notifPermission = await Notification.requestPermission();
         if (notifPermission !== "granted") {
-            throw new Error("Notifications not granted by user");
+            showMapWarning("Notifications blocked. Enable notifications to receive alerts.", 6000);
+            return null;
         }
 
-        const type = await getPushType()
+        const type = await getPushType();
 
         switch (type) {
-            case 'fcm':
-                return await subscribeFCM(lat, lon)
-            case 'webpush':
-                return await subscribeWebPush(lat, lon)
+            case "fcm":
+                return await subscribeFCM(lat, lon);
+            case "webpush":
+                return await subscribeWebPush(lat, lon);
             default:
-                return null
+                showMapWarning("Your browser does not support push notifications.", 6000);
+                return null;
         }
     } catch (err) {
-        console.error(err)
+        console.error(err);
+        showMapWarning("Failed to enable alerts. Please try again later.", 6000);
     }
 };
 
@@ -188,7 +201,7 @@ async function saveSubscription(data) {
         },
         body: JSON.stringify(data),
     });
-
+    if(res.status === 429) showMapWarning("Too many requests, wait 1 min before updating location again", 5000)
     if (!res.ok) throw new Error("Request failed");
     return res.json();
 }
@@ -255,6 +268,22 @@ function createPositionString(lat, lon) {
     return `Latitude: ${lat.toFixed(
         4
     )}, Longitude: ${lon.toFixed(4)}`;
+}
+
+function showMapWarning(message, durationMs = 5000) {
+    const box = document.getElementById("map-warning");
+    const text = document.getElementById("map-warning-text");
+
+    text.textContent = message;
+    box.classList.remove("hidden");
+
+    if (durationMs > 0) {
+        setTimeout(() => hideMapWarning(), durationMs);
+    }
+}
+
+function hideMapWarning() {
+    document.getElementById("map-warning").classList.add("hidden");
 }
 
 async function getPushType() {
