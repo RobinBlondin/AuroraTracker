@@ -4,8 +4,8 @@ const keys = self.APP_KEYS;
 firebase.initializeApp(config);
 const messaging = firebase.messaging();
 
-navigator.serviceWorker.register("/sw.js").then((registration) => {
-    messaging.useServiceWorker(registration);
+navigator.serviceWorker.register("/sw.js").catch(err => {
+    console.error("Service worker registration failed:", err);
 });
 
 /* ===== Leaflet map functions ===== */
@@ -123,8 +123,8 @@ async function subscribeWebPush(lat, lon) {
         auth: push.keys.auth,
         p256dh: push.keys.p256dh,
         userId: localStorage.getItem("userId"),
-        lat,
-        lon,
+        lat: lat,
+        lon: lon,
     };
 }
 
@@ -132,15 +132,17 @@ async function subscribeFCM(lat, lon) {
     const permission = await Notification.requestPermission();
     if (permission !== "granted") throw new Error("Permission denied");
 
+    const registration = await navigator.serviceWorker.ready;
     const token = await messaging.getToken({
-        vapidKey: keys.firebaseVapidKey
+        vapidKey: keys.firebaseVapidKey,
+        serviceWorkerRegistration: registration
     });
 
     return {
         firebaseToken: token,
         userId: localStorage.getItem("userId"),
-        lat,
-        lon,
+        lat: lat,
+        lon: lon,
     };
 }
 
