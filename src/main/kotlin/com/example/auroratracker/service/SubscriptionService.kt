@@ -48,22 +48,24 @@ class SubscriptionService(
 
       fun checkIfSubExists(dto: SubscriptionDto): Boolean = subRepo.existsByUserId(dto.userId!!)
 
-      fun isAfterSunsetAndClearSky(dto: SubscriptionDto): Boolean {
+      fun getWeatherData (dto: SubscriptionDto): WeatherResponseDto? {
             val url =
                   "https://api.open-meteo.com/v1/forecast?latitude=${dto.lat}&longitude=${dto.lon}&current=cloud_cover&daily=sunset"
 
-            val weatherResponse = jsonService.fetchAndParse<WeatherResponseDto>(url).getOrElse {
+            return jsonService.fetchAndParse<WeatherResponseDto>(url).getOrElse {
                   println("Failed to fetch or parse weather data: ${it.message}")
-                  return false
+                  return null
             }
+      }
 
-            val currentTime = ZonedDateTime.parse("${weatherResponse.current?.time ?: return false}Z")
-            val sunsetTime = ZonedDateTime.parse("${weatherResponse.daily?.sunset?.firstOrNull() ?: return false}Z")
+      fun isAfterSunset(weatherData: WeatherResponseDto): Boolean {
+            val currentTime = ZonedDateTime.parse("${weatherData.current?.time ?: return false}Z")
+            val sunsetTime = ZonedDateTime.parse("${weatherData.daily?.sunset?.firstOrNull() ?: return false}Z")
+            return currentTime.isAfter(sunsetTime)
+      }
 
-            val isAfterSunset = currentTime.isAfter(sunsetTime)
-            val isClearSky = (weatherResponse.current.cloudCover ?: 100.0) < 20.0
-
-            return isAfterSunset && isClearSky
+      fun getCloudCover(weatherData: WeatherResponseDto): Double {
+            return weatherData.current?.cloudCover ?: 100.0
       }
 
       fun toLiteDto(dto: SubscriptionDto): SubscriptionLiteDto = SubscriptionLiteDto(dto.lon, dto.lat, dto.lastNotificationTime)

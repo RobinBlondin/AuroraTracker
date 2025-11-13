@@ -24,9 +24,9 @@ class PushNotificationController(
 
             for (sub in subs) {
                   if(sub.firebaseToken != null) {
-                        firebaseService.sendNotification(sub.firebaseToken!!)
+                        firebaseService.sendNotification(sub.firebaseToken!!, 50.0)
                   } else {
-                        webPushService.sendNotification(sub.endpoint, sub.p256dh, sub.auth)
+                        webPushService.sendNotification(sub.endpoint, sub.p256dh, sub.auth, "50.0")
                   }
             }
             return ResponseEntity.ok("Success")
@@ -40,9 +40,9 @@ class PushNotificationController(
                   subscriptionService.getSubByUserId(userId).orElse(null) ?: return ResponseEntity.notFound().build()
 
             if(sub.firebaseToken != null) {
-                  firebaseService.sendNotification(sub.firebaseToken!!)
+                  firebaseService.sendNotification(sub.firebaseToken!!, 50.0)
             } else {
-                  webPushService.sendNotification(sub.endpoint, sub.p256dh, sub.auth)
+                  webPushService.sendNotification(sub.endpoint, sub.p256dh, sub.auth, "50.0")
             }
 
             return ResponseEntity.ok("Success")

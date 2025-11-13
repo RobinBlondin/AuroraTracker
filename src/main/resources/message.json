@@ -1,5 +1,5 @@
 {
   "title": "Aurora Alert",
-  "body": "Aurora activity detected near your location!",
+  "body": "Aurora activity detected near your location! Current cloud cover: CLOUD_COVER%",
   "image": "/images/icon-192.png"
 }

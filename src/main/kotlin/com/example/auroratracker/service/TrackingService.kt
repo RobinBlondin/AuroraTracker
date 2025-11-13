@@ -96,7 +96,9 @@ class TrackingService(
             log.info("KpIndex: $kp at ${LocalDateTime.now().toString().split("T")[1].take(5)}")
 
             for (sub in subs) {
-                  if (!subscriptionService.isAfterSunsetAndClearSky(sub)) continue
+                  val weatherData = subscriptionService.getWeatherData(sub)
+                  val cloudCover = weatherData?.current?.cloudCover ?: 100.0
+                  if (weatherData != null && !subscriptionService.isAfterSunset(weatherData)) continue
                   if (subscriptionService.hasReceivedNotificationRecently(sub)) continue
 
                   val nearby = points.filter { p ->
@@ -118,9 +120,9 @@ class TrackingService(
 
                   if (shouldNotify) {
                         if(sub.firebaseToken != null) {
-                              firebaseService.sendNotification(sub.firebaseToken!!)
+                              firebaseService.sendNotification(sub.firebaseToken!!, cloudCover)
                         } else {
-                              webPushService.sendNotification(sub.endpoint, sub.p256dh, sub.auth)
+                              webPushService.sendNotification(sub.endpoint, sub.p256dh, sub.auth, cloudCover.toString())
                         }
                         subscriptionService.updateLastNotificationTime(sub)
                         notificationService.add(Notification(userId = sub.userId, lat = sub.lat, lon = sub.lon))

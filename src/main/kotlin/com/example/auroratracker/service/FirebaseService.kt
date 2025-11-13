@@ -32,11 +32,11 @@ class FirebaseService(
             }
       }
 
-      fun sendNotification(token: String) {
+      fun sendNotification(token: String, cloudCover: Double) {
             val message = Message.builder()
                   .setToken(token)
                   .putData("title", "Aurora Alert")
-                  .putData("body", "Aurora activity detected near your location!")
+                  .putData("body", "Aurora activity detected near your location! Cloud cover: $cloudCover")
                   .putData("image", "/images/icon-192.png")
                   .build()
 

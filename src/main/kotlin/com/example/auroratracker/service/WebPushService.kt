@@ -19,7 +19,7 @@ class WebPushService(
             Security.addProvider(BouncyCastleProvider())
       }
 
-      fun sendNotification(endpoint: String?, p256dh: String?, auth: String?) {
+      fun sendNotification(endpoint: String?, p256dh: String?, auth: String?, cloudCover: String) {
              val publicKey = env.vapid.publicKey
              val privateKey = env.vapid.privateKey
              val subject = env.vapid.subject
@@ -27,7 +27,8 @@ class WebPushService(
 
             try {
                   val path = Paths.get(javaClass.classLoader.getResource("message.json")!!.toURI())
-                  val payload =  Files.readString(path)
+                  var payload =  Files.readString(path)
+                  payload = payload.replace("CLOUD_COVER", cloudCover)
 
                   val subscription = Subscription(endpoint, Subscription.Keys(p256dh, auth))
                   val notification = Notification(subscription, payload)
