@@ -24,7 +24,7 @@ class AuroraPointsController(
             ): ResponseEntity<List<AuroraPoint>> {
             if(env.secrets.key != secretDelivered) return ResponseEntity(HttpStatus.UNAUTHORIZED)
 
-            val points = trackingService.getAuroraPoints().filter { it.probability > probability }
+            val points = trackingService.getAuroraPoints().filter { it.probability > probability }.sortedBy { it.probability }
             return ResponseEntity.ok(points)
       }
 }
