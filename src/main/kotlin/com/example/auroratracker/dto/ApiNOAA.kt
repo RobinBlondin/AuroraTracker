@@ -7,9 +7,9 @@ import kotlinx.serialization.Serializable
 data class AuroraBelt(
       val coordinates: List<List<Double>> = emptyList()
 ) {
-      fun convertToAuroraPoints(): List<AuroraPoint> {
+      fun convertToAuroraPoints(): List<AuroraPointDto> {
             return coordinates.map { cord ->
-                  AuroraPoint(
+                  AuroraPointDto(
                         lon = cord[0],
                         lat = cord[1],
                         probability = cord[2]
@@ -18,7 +18,7 @@ data class AuroraBelt(
       }
 }
 
-data class AuroraPoint(
+data class AuroraPointDto(
       var lon: Double,
       var lat: Double,
       var probability: Double

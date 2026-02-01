@@ -3,7 +3,7 @@ package com.example.auroratracker.service
 import com.example.auroratracker.config.EnvConfig
 import com.example.auroratracker.domain.Thresholds
 import com.example.auroratracker.dto.AuroraBelt
-import com.example.auroratracker.dto.AuroraPoint
+import com.example.auroratracker.dto.AuroraPointDto
 import com.example.auroratracker.dto.KpIndexDto
 import com.example.auroratracker.entity.Notification
 import kotlinx.coroutines.runBlocking
@@ -57,15 +57,7 @@ class TrackingService(
             return distanceMeters
       }
 
-      fun getAuroraPoints(): List<AuroraPoint> {
-            val url = env.api.url.noaa
-            val response = jsonService.fetchAndParse<AuroraBelt>(url)
-            val auroraBelt = response.getOrElse {
-                  println("Failed to fetch or parse aurora points: ${it.message}")
-                  AuroraBelt()
-            }
-            return auroraBelt.convertToAuroraPoints().filter { it.lat >= 30 }
-      }
+
 
       fun getKpIndex(current: Boolean = false): Int? {
             val url = env.api.url.kp
