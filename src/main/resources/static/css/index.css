@@ -21,17 +21,16 @@ body {
     max-width: 800px;
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
-    padding: 0 1.5rem;
+    gap: 0.5rem;
 }
 
 .header {
     display: flex;
     flex-direction: column;
-    height: 7rem;
-    justify-content: center;
+    height: 9vh;
     align-items: center;
-    gap: 0.5rem
+    gap: 0.1rem;
+    padding: 0.5rem 0;
 }
 
 .logo {
@@ -56,15 +55,32 @@ body {
 
 .data {
     display: flex;
+    justify-content: space-between;
+    gap: 0.5rem;
+    height: 4vh;
+    border: 2px solid rgba(0, 255, 135, 0.2);
+    border-radius: 0.5rem 0.5rem 0 0;
+    padding: 0.5rem 1rem;
+    margin-bottom: -0.5rem;
+}
+
+.activity-container, .kp-value {
+    display: flex;
+    align-items: center;
     gap: 0.5rem;
 }
 
-.map {
+.kp-value p {
+    align-self: center;
+}
+
+
+.globe-container {
     position: relative;
-    height: 25rem;
-    border-radius: 0.5rem;
-    background: url("../images/startpageformap.png") center / cover no-repeat;
+    height: 80vh;
+    border-radius: 0 0 0.5rem 0.5rem;
     overflow: hidden;
+    border: 2px solid rgba(0, 255, 135, 0.2);
 }
 
 .map-warning {
@@ -98,7 +114,7 @@ body {
 
 .buttons {
     display: flex;
-    height: 3rem;
+    height: 5vh;
     border-radius: 0.5rem;
     gap: 0.5rem;
     -webkit-user-select: none; /* iOS Safari – no text selection */
@@ -215,33 +231,46 @@ body {
 .info h3,
 .positions h3,
 .timeStamp h3,
-.data h3 {
+.data h3,
+.data span {
     color: #00f5a0;
     font-weight: 600;
 }
 
+.data p, .data span, .data h3 {
+    align-self: center;
+}
+
+.kp-green {
+    color: #2ecc71;
+}
+
+.kp-yellow {
+    color: #f1c40f;
+}
+
+.kp-orange {
+    color: #e67e22;
+}
+
+.kp-red {
+    color: #e74c3c;
+}
+
+.kp-purple {
+    color: #8e44ad;
+    font-weight: bold;
+}
+
+
 @media (max-width: 768px) {
-    body {
-    }
 
     .wrapper {
         padding: 0 1rem 2rem 1rem;
     }
+
     .map {
         height: 25rem;
-    }
-
-    .buttons {
-        height: 3rem;
-    }
-
-    .info {
-    }
-
-    .positions {
-    }
-
-    .timeStamp {
     }
 }
 
@@ -251,12 +280,36 @@ body {
     .logo {
         font-size: 2rem;
     }
+    .data {
+        height: 6vh;
+    }
+    .globe-container {
+        height: 78vh;
+    }
+    .kp-value span {
+        align-self: start;
+    }
+    .data p {
+        align-self: start;
+    }
+    .activity-container, .kp-value {
+        flex-direction: column;
+    }
 }
 
 @media (max-width: 400px) {
     .sub-button, .unsub-button {
         padding: 1rem 0.5rem;
         gap: 0.25rem;
+    }
+    .header {
+        height: 8vh;
+    }
+    .data {
+        height: 6vh;
+    }
+    .globe-container {
+        height: 78vh;
     }
 
     .button-icon {

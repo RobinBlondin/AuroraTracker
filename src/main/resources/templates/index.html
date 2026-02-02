@@ -28,14 +28,49 @@
         </div>
     </header>
     <section class="data">
-            <h3>Kp-index:</h3>
-            <h3 th:text="${kp}"></h3>
-    </section>
-    <section class="map">
-        <div id="map-warning" class="map-warning hidden">
-            <p id="map-warning-text"></p>
+        <div class="activity-container">
+            <h3 class="activity-label">Current activity:</h3>
+
+            <p class="activity-value"
+                    th:text="${
+                kp < 2 ? 'Quiet' :
+                kp < 3 ? 'Calm' :
+                kp < 4 ? 'Active' :
+                kp < 5 ? 'Elevated' :
+                kp < 6 ? 'Minor geomagnetic storm' :
+                kp < 7 ? 'Moderate geomagnetic storm' :
+                kp < 8 ? 'Strong geomagnetic storm' :
+                kp < 9 ? 'Severe geomagnetic storm' :
+                         'Extreme geomagnetic storm'
+            }"
+                    th:class="${
+                kp < 3 ? 'kp-green' :
+                kp < 5 ? 'kp-yellow' :
+                kp < 6 ? 'kp-orange' :
+                kp < 8 ? 'kp-red' :
+                         'kp-purple'
+            }">
+            </p>
         </div>
-        <div  id="map">
+
+        <div class="kp-value">
+            <h3>Kp:</h3>
+            <p th:text="${kp}"
+
+               th:class="${
+                kp < 3 ? 'kp-green' :
+                kp < 5 ? 'kp-yellow' :
+                kp < 6 ? 'kp-orange' :
+                kp < 8 ? 'kp-red' :
+                         'kp-purple'
+                         }">
+
+            </p>
+        </div>
+    </section>
+
+    <section class="globe-container">
+        <div  id="globeViz">
 
         </div>
     </section>
@@ -46,41 +81,8 @@
                     src="/images/navigate-icon.png"
                     alt="Icon of a navigation arrow"
             />
-            <p>Turn On Alerts</p>
+            <p>Register</p>
         </div>
-        <div class="unsub-button" onclick="unSubscribeOnLocation()">
-            <img
-                    class="button-icon"
-                    src="/images/trash-icon.png"
-                    alt="trash icon"
-            />
-            <p>Turn Off Alerts</p>
-        </div>
-    </section>
-
-    <section class="info"><h3>Get Notified When Auroras Appear</h3>
-        <ol>
-            <li>
-                <strong>Add page to home screen:</strong><br>
-                <div style="margin: 0.5em 0 0 1.5em">
-                    • On <strong>iPhone</strong> → open this page in <strong>Safari</strong> and  tap the <span style="white-space: nowrap;">Share <img
-                        src="/images/share-icon.png" alt="Share icon"
-                        style="height: 1em; vertical-align: middle;"></span> icon, then choose <em>Add to Home
-                    Screen</em>
-                </div>
-                <div style="margin: 0.5em 0 0 1.5em">
-                    • On <strong>Android</strong> → open this page in <strong>Chrome</strong> and tap the <span style="white-space: nowrap;">⋮</span> menu in the
-                    top right and select <em>Add to Home screen</em>. Chrome might even suggest it automatically.
-                </div>
-            </li>
-            <li>Open the app and tap “Turn On Alerts” and allow location and notification access when asked.</li>
-            <li>Your coordinates are stored securely so we can estimate aurora visibility in your area.</li>
-            <li>If auroras are likely, you’ll get a push notification. You only get one alert per event, but lights
-                usually last for hours.
-            </li>
-            <li>Tap the green button again if you move or travel. That updates your location.</li>
-            <li>Tap the red button to turn off alerts and be completely removed from our system.</li>
-        </ol>
     </section>
     <section class="info">
         <h3>How Aurora Tracker Works</h3>
@@ -103,18 +105,6 @@
             you a notification so you don’t miss the show in the sky.
         </p>
     </section>
-    <section class="positions">
-        <h3>Current Position Registered</h3>
-        <div class="paragraphBox">
-            <p class="position-data">No current position selected</p>
-        </div>
-    </section>
-    <section class="timeStamp">
-        <h3>Last Notification Recieved</h3>
-        <div class="paragraphBox">
-            <p class="notification-timestamp">No notifications received</p>
-        </div>
-    </section>
 </div>
 <script src="/config.js"></script>
 <script src="/keys.js"></script>
@@ -128,6 +118,7 @@
 <script
         src="https://unpkg.com/leaflet.heat/dist/leaflet-heat.js">
 </script>
+<script src="//cdn.jsdelivr.net/npm/globe.gl"></script>
 
 <script src="/script/script.js"></script>
 </body>

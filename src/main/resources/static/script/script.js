@@ -8,98 +8,174 @@ navigator.serviceWorker.register("/sw.js").catch(err => {
     console.error("Service worker registration failed:", err);
 });
 
-/* ===== Leaflet map functions ===== */
+const globeEl = document.getElementById("globeViz");
+const globeParent = globeEl.parentElement;
+let globe;
 
-const map = L.map("map").setView([51.505, -0.09], 12);
 
-L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-    attribution: '&copy; <a href="https://carto.com/attributions">CARTO</a>',
-    subdomains: 'abcd',
-    maxZoom: 19
-}).addTo(map);
+const initializeGlobe = async () => {
+    const coords = await getUserCountryCoordinates();
 
-let currentMarker = null;
+    globe = new Globe(document.getElementById("globeViz"))
+        .globeImageUrl(
+            "//cdn.jsdelivr.net/npm/three-globe/example/img/earth-dark.jpg",
+        )
+        .width(globeParent.offsetWidth)
+        .height(globeParent.offsetHeight)
+        .pointOfView({ lat: coords.lat, lng: coords.lon, altitude: 2 }, 1000);
 
-function placeMarker(lat, lon) {
-    if (currentMarker) {
-        map.removeLayer(currentMarker);
-    }
-    const icon = L.icon({
-        iconUrl: '/images/pin-icon.png',
-        iconSize: [41, 41],
-        iconAnchor: [12, 41],
-        popupAnchor: [1, -34]
-    });
-
-    currentMarker = L.marker([lat, lon], {icon}).addTo(map);
-    map.setView([lat, lon]);
+    fetchAndPrintAuroraPoints();
 }
 
-const unSubscribeOnLocation = async () => {
-    let userId = localStorage.getItem("userId");
-    toggleButtonColors("green")
-    await unsubscribeServiceWorker()
 
-    const response = await fetch(
-        "/api/subscriptions/unsubscribe/" + userId,
-        {
-            method: "DELETE",
-            headers: {
-                "X-Request-ID":keys.secretKey
-            }
-        }
-    );
+initializeGlobe();
 
-    if (response.ok) {
-        toggleDisplayMap("none")
-        UI.setText(".position-data", "No current position selected")
-    }
-};
 
-const toggleDisplayMap = (style) => {
-    const mapElement = document.getElementById("map");
-    mapElement.style.display = style;
-};
+setInterval(() => {
+    fetchAndPrintAuroraPoints;
+}, 60000 * 5);
 
-const updateLocation = async () => {
-    toggleButtonColors("red");
-
-    navigator.geolocation.getCurrentPosition(
-        async (pos) => {
-            const lat = pos.coords.latitude;
-            const lon = pos.coords.longitude;
-
-            placeMarker(lat, lon);
-            const subscription = await subscribe(lat, lon);
-
-            if (subscription == null) throw Error("Unsupported browser");
-
-            await saveSubscription(subscription);
-            toggleDisplayMap("block");
-            UI.setText(".position-data", createPositionString(lat, lon));
+function fetchAndPrintAuroraPoints() {
+    fetch("/api/points/all", {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "x-request-id": "630d768e-ca2f-4241-b396-96de0e44b644",
         },
-        (err) => {
-            console.error("Geolocation error:", err);
+        mode: "cors",
+    })
+        .then((res) => res.json())
+        .then((points) => {
+            const maxProb = Math.max(...points.map((p) => p.probability));
 
-            switch (err.code) {
-                case err.PERMISSION_DENIED:
-                    showMapWarning("Location access denied. Turn on location to enable alerts.", 6000);
-                    break;
-                case err.POSITION_UNAVAILABLE:
-                    showMapWarning("Unable to retrieve location. Check your GPS or connection.", 6000);
-                    break;
-                case err.TIMEOUT:
-                    showMapWarning("Location request timed out. Try again.", 6000);
-                    break;
-                default:
-                    showMapWarning("An unknown error occurred while getting location.", 6000);
-                    break;
-            }
+            globe
+                .pointsData(points)
+                .pointLat((d) => d.lat)
+                .pointLng((d) => d.lon)
+                .pointAltitude(0.001)
+                .pointRadius((d) => {
+                    const latFactor = Math.cos((d.lat * Math.PI) / 180);
+                    return 0.4 * latFactor;
+                })
+                .pointColor((d) => {
+                    const norm = d.probability / maxProb;
+                    const opacity = norm;
+                    return `rgba(0, 255, 100, ${opacity})`;
+                });
+        });
+}
 
-            toggleButtonColors("green");
-        }
-    );
-};
+async function getUserCountryCoordinates() {
+    try {
+        const response = await fetch('https://ipapi.co/json/');
+        const data = await response.json();
+
+        console.log("Land:", data.country_name);
+        console.log("Lat/Lon:", data.latitude, data.longitude);
+
+        return {
+            country: data.country_name,
+            lat: Math.round(data.latitude * 100) / 100,
+            lon: Math.round(data.longitude * 100) / 100,
+        };
+    } catch (error) {
+        console.error("Misslyckades att hämta plats:", error);
+        return null;
+    }
+}
+
+// /* ===== Leaflet map functions ===== */
+//
+// const map = L.map("map").setView([51.505, -0.09], 12);
+//
+// L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+//     attribution: '&copy; <a href="https://carto.com/attributions">CARTO</a>',
+//     subdomains: 'abcd',
+//     maxZoom: 19
+// }).addTo(map);
+//
+// let currentMarker = null;
+//
+// function placeMarker(lat, lon) {
+//     if (currentMarker) {
+//         map.removeLayer(currentMarker);
+//     }
+//     const icon = L.icon({
+//         iconUrl: '/images/pin-icon.png',
+//         iconSize: [41, 41],
+//         iconAnchor: [12, 41],
+//         popupAnchor: [1, -34]
+//     });
+//
+//     currentMarker = L.marker([lat, lon], {icon}).addTo(map);
+//     map.setView([lat, lon]);
+// }
+//
+// const unSubscribeOnLocation = async () => {
+//     let userId = localStorage.getItem("userId");
+//     toggleButtonColors("green")
+//     await unsubscribeServiceWorker()
+//
+//     const response = await fetch(
+//         "/api/subscriptions/unsubscribe/" + userId,
+//         {
+//             method: "DELETE",
+//             headers: {
+//                 "X-Request-ID":keys.secretKey
+//             }
+//         }
+//     );
+//
+//     if (response.ok) {
+//         toggleDisplayMap("none")
+//         UI.setText(".position-data", "No current position selected")
+//     }
+// };
+//
+// const toggleDisplayMap = (style) => {
+//     const mapElement = document.getElementById("map");
+//     mapElement.style.display = style;
+// };
+//
+// const updateLocation = async () => {
+//     toggleButtonColors("red");
+//
+//     navigator.geolocation.getCurrentPosition(
+//         async (pos) => {
+//             const lat = pos.coords.latitude;
+//             const lon = pos.coords.longitude;
+//
+//             placeMarker(lat, lon);
+//             const subscription = await subscribe(lat, lon);
+//
+//             if (subscription == null) throw Error("Unsupported browser");
+//
+//             await saveSubscription(subscription);
+//             toggleDisplayMap("block");
+//             UI.setText(".position-data", createPositionString(lat, lon));
+//         },
+//         (err) => {
+//             console.error("Geolocation error:", err);
+//
+//             switch (err.code) {
+//                 case err.PERMISSION_DENIED:
+//                     showMapWarning("Location access denied. Turn on location to enable alerts.", 6000);
+//                     break;
+//                 case err.POSITION_UNAVAILABLE:
+//                     showMapWarning("Unable to retrieve location. Check your GPS or connection.", 6000);
+//                     break;
+//                 case err.TIMEOUT:
+//                     showMapWarning("Location request timed out. Try again.", 6000);
+//                     break;
+//                 default:
+//                     showMapWarning("An unknown error occurred while getting location.", 6000);
+//                     break;
+//             }
+//
+//             toggleButtonColors("green");
+//         }
+//     );
+// };
 
 /* =====  Helper functions ===== */
 
