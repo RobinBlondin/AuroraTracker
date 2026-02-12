@@ -16,74 +16,75 @@
 </head>
 <body>
 <div class="wrapper">
-    <header class="header">
-        <p class="logo">Aurora Tracker</p>
-        <div class="slogan-container">
-            <img
-                    class="pin-icon"
-                    src="/images/pin-icon.png"
-                    alt="map location pin icon"
-            />
-            <p class="slogan">Chase the northern lights</p>
-        </div>
-    </header>
-    <section class="data">
-        <div class="activity-container">
-            <h3 class="activity-label">Current activity:</h3>
+    <div class="hero">
+      <header class="header">
+            <p class="logo">Aurora Tracker</p>
+            <div class="slogan-container">
+                <img
+                        class="pin-icon"
+                        src="/images/pin-icon.png"
+                        alt="map location pin icon"
+                />
+                <p class="slogan">Chase the northern lights</p>
+            </div>
+        </header>
+        <section class="data">
+            <div class="activity-container">
+                <p class="activity-label">Current activity:</p>
 
-            <p class="activity-value"
-                    th:text="${
-                kp < 2 ? 'Quiet' :
-                kp < 3 ? 'Calm' :
-                kp < 4 ? 'Active' :
-                kp < 5 ? 'Elevated' :
-                kp < 6 ? 'Minor geomagnetic storm' :
-                kp < 7 ? 'Moderate geomagnetic storm' :
-                kp < 8 ? 'Strong geomagnetic storm' :
-                kp < 9 ? 'Severe geomagnetic storm' :
-                         'Extreme geomagnetic storm'
-            }"
-                    th:class="${
-                kp < 3 ? 'kp-green' :
-                kp < 5 ? 'kp-yellow' :
-                kp < 6 ? 'kp-orange' :
-                kp < 8 ? 'kp-red' :
-                         'kp-purple'
-            }">
-            </p>
-        </div>
+                <p class="activity-value"
+                        th:text="${
+                    kp < 2 ? 'Quiet' :
+                    kp < 3 ? 'Calm' :
+                    kp < 4 ? 'Active' :
+                    kp < 5 ? 'Elevated' :
+                    kp < 6 ? 'Minor geomagnetic storm' :
+                    kp < 7 ? 'Moderate geomagnetic storm' :
+                    kp < 8 ? 'Strong geomagnetic storm' :
+                    kp < 9 ? 'Severe geomagnetic storm' :
+                             'Extreme geomagnetic storm'
+                }"
+                        th:class="${
+                    kp < 3 ? 'kp-green' :
+                    kp < 5 ? 'kp-yellow' :
+                    kp < 6 ? 'kp-orange' :
+                    kp < 8 ? 'kp-red' :
+                             'kp-purple'
+                }">
+                </p>
+            </div>
 
-        <div class="kp-value">
-            <h3>Kp:</h3>
-            <p th:text="${kp}"
+            <div class="kp-value">
+                <p class="activity-label">Kp:</p>
+                <p th:text="${kp}"
 
-               th:class="${
-                kp < 3 ? 'kp-green' :
-                kp < 5 ? 'kp-yellow' :
-                kp < 6 ? 'kp-orange' :
-                kp < 8 ? 'kp-red' :
-                         'kp-purple'
-                         }">
+                   th:class="${
+                    kp < 3 ? 'kp-green' :
+                    kp < 5 ? 'kp-yellow' :
+                    kp < 6 ? 'kp-orange' :
+                    kp < 8 ? 'kp-red' :
+                             'kp-purple'
+                             }">
 
-            </p>
-        </div>
-    </section>
+                </p>
+            </div>
+        </section>
 
-    <section class="globe-container">
-        <div  id="globeViz">
+        <section class="globe-container">
+            <div  id="globeViz">
 
-        </div>
-    </section>
-    <section class="buttons">
-        <div class="sub-button" onclick="updateLocation()">
-            <img
-                    class="button-icon"
-                    src="/images/navigate-icon.png"
-                    alt="Icon of a navigation arrow"
-            />
-            <p>Register</p>
-        </div>
-    </section>
+            </div>
+        </section>
+        <section class="buttons">
+            <div class="sign-up-container">
+                <p class="sign-up-title">Never miss the aurora</p>
+                <p class="sign-up-sub">Get notified when it’s visible near you</p>
+            </div>
+            <div class="sub-button" onclick="goToSignUpPage()">
+                <p>Register</p>
+            </div>
+        </section>
+    </div>
     <section class="info">
         <h3>How Aurora Tracker Works</h3>
         <p>
@@ -118,7 +119,7 @@
 <script
         src="https://unpkg.com/leaflet.heat/dist/leaflet-heat.js">
 </script>
-<script src="//cdn.jsdelivr.net/npm/globe.gl"></script>
+<script src="https://cdn.jsdelivr.net/npm/globe.gl"></script>
 
 <script src="/script/script.js"></script>
 </body>
