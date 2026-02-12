@@ -1,5 +1,6 @@
 package com.example.auroratracker.entity
 
+import com.example.auroratracker.enums.NotificationLevel
 import jakarta.persistence.Entity
 import java.time.ZonedDateTime
 
@@ -11,10 +12,9 @@ class User(
       var lon: Double? = null,
       var lat: Double? = null,
       var lastNotificationTime: ZonedDateTime? = null,
-      var refreshToken: String? = null,
-      var accessToken: String? = null,
+      var notificationLevel: NotificationLevel? = null,
       var emailVerified: Boolean = false,
       var phoneVerified: Boolean = false,
       var enabled: Boolean = false,
 
-): BaseEntity()
+      ): BaseEntity()
