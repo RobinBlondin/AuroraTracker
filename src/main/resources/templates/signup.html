@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Aurora Tracker – Alerts</title>
+    <link rel="stylesheet" href="/css/index.css"/>
+    <link rel="stylesheet" href="/css/signup.css"/>
+</head>
+<body>
+
+<div class="wrapper">
+
+    <header class="header">
+        <p class="logo">Aurora Tracker</p>
+        <p class="slogan">Get notified when the aurora appears</p>
+    </header>
+
+    <section class="signup-panel">
+
+        <div class="back-button-container">
+            <h3>Enable Aurora Alerts</h3>
+            <button type="button" class="secondary-button back-button" onclick="history.back()">
+                Back
+            </button>
+        </div>
+
+
+
+        <form class="signup-form">
+            <div class="form-section">
+                <label>Email</label>
+                <input type="email" placeholder="you@example.com" required />
+
+                <label>Phone number</label>
+                <div class="phone-row">
+                    <select>
+                        <option value="+1">+1</option>
+                        <option value="+44">+44</option>
+                        <option value="+46">+46</option>
+                    </select>
+                    <input type="tel" placeholder="Phone number" required />
+                </div>
+
+                <p class="hint">
+                    Both email and phone must be confirmed before alerts are sent.
+                </p>
+            </div>
+
+            <div class="form-section">
+                <label>Location</label>
+
+                <div class="location-row">
+                    <button type="button" class="secondary-button" onclick="getUserLocation()">
+                        Use my current location
+                    </button>
+
+                    <div class="coordinates">
+                        <input type="text" placeholder="Latitude" id="lat" readonly />
+                        <input type="text" placeholder="Longitude" id="lon" readonly />
+                    </div>
+                </div>
+
+                <p class="hint">
+                    We round your coordinates to protect your privacy. Accurate enough for alerts.
+                </p>
+            </div>
+
+            <div class="form-section">
+                <label>Notification preferences</label>
+
+                <div class="radio-group">
+                    <label>
+                        <input type="radio" name="level" />
+                        All aurora activity
+                    </label>
+
+                    <label>
+                        <input type="radio" name="level" />
+                        Only when skies are clear
+                    </label>
+
+                    <label>
+                        <input type="radio" name="level" checked />
+                        Only when skies are clear and activity is strong
+                    </label>
+                </div>
+
+                <p class="hint">
+                    You will receive at most one alert per aurora event.
+                </p>
+            </div>
+
+            <button type="submit" class="sub-button full-width">
+                Enable alerts
+            </button>
+
+            <p class="footer-note">
+                Free service. No ads. Unsubscribe anytime.
+            </p>
+
+        </form>
+    </section>
+
+
+</div>
+<script src="/script/signup.js"></script>
+</body>
+</html>

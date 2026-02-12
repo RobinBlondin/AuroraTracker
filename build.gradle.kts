@@ -28,6 +28,7 @@ dependencies {
       implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
       implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
       implementation("com.google.firebase:firebase-admin:9.7.0")
+      implementation("com.twilio.sdk:twilio-java-sdk:10.0.0-rc.7")
       implementation("org.mapstruct:mapstruct:1.6.3")
       kapt("org.mapstruct:mapstruct-processor:1.6.3")
       implementation("nl.martijndwars:web-push:5.1.2")

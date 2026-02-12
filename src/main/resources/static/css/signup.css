@@ -1,0 +1,136 @@
+.signup-panel {
+    background-color: rgba(26, 40, 71, 0.6);
+    border: 2px solid rgba(0, 255, 135, 0.15);
+    border-radius: 0.75rem;
+    padding: 1rem;
+    color: #cfd8dc;
+}
+
+.signup-panel h3 {
+    color: #00f5a0;
+    margin-bottom: 1rem;
+}
+
+.back-button-container {
+    display: flex;
+    justify-content: space-between;
+}
+
+.signup-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+}
+
+.form-section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.location-row {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+label {
+    font-size: 0.85rem;
+    color: #00f5a0;
+    font-weight: 600;
+}
+
+input,
+select {
+    background-color: rgba(10, 17, 40, 0.9);
+    border: 1px solid rgba(0, 255, 135, 0.2);
+    border-radius: 0.4rem;
+    padding: 0.5rem;
+    color: #cfd8dc;
+    font-size: 0.9rem;
+}
+
+input::placeholder {
+    color: rgba(207, 216, 220, 0.5);
+}
+
+.phone-row {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.phone-row select {
+    width: 5rem;
+}
+
+.radio-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.radio-group label {
+    font-weight: 400;
+    color: #cfd8dc;
+}
+
+.radio-group input {
+    margin-right: 0.5rem;
+}
+
+.secondary-button {
+    background: transparent;
+    border: 1px solid rgba(0, 255, 135, 0.3);
+    color: #00f5a0;
+    padding: 0.4rem;
+    border-radius: 0.4rem;
+    cursor: pointer;
+}
+
+.secondary-button:hover {
+    background-color: rgba(0, 255, 135, 0.1);
+}
+
+.captcha-box {
+    border: 1px dashed rgba(0, 255, 135, 0.3);
+    border-radius: 0.4rem;
+    padding: 0.75rem;
+    text-align: center;
+    font-size: 0.8rem;
+    opacity: 0.8;
+}
+
+.back-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.4rem 0.8rem;
+    margin-bottom: 0.8rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    background-color: rgba(10, 17, 40, 0.8);
+    color: #00f5a0;
+    border: 1px solid rgba(0, 255, 135, 0.3);
+    border-radius: 0.4rem;
+    cursor: pointer;
+}
+
+.back-button:hover {
+    background-color: rgba(0, 255, 135, 0.1);
+}
+
+
+.full-width {
+    width: 100%;
+}
+
+.footer-note {
+    font-size: 0.75rem;
+    opacity: 0.75;
+    text-align: center;
+}
+
+.hint {
+    font-size: 0.75rem;
+    opacity: 0.75;
+}
