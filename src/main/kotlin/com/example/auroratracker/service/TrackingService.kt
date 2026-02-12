@@ -2,8 +2,6 @@ package com.example.auroratracker.service
 
 import com.example.auroratracker.config.EnvConfig
 import com.example.auroratracker.domain.Thresholds
-import com.example.auroratracker.dto.AuroraBelt
-import com.example.auroratracker.dto.AuroraPointDto
 import com.example.auroratracker.dto.KpIndexDto
 import com.example.auroratracker.entity.Notification
 import kotlinx.coroutines.runBlocking
@@ -17,6 +15,7 @@ import kotlin.math.*
 class TrackingService(
       private val jsonService: JsonService,
       private val subscriptionService: SubscriptionService,
+      private val auroraPointService: AuroraPointService,
       private val webPushService: WebPushService,
       private val firebaseService: FirebaseService,
       private val notificationService: NotificationService,
@@ -78,9 +77,9 @@ class TrackingService(
             return indexesOfLastHour.maxOrNull()
       }
 
-      @Scheduled(fixedDelay = 1800000)
+      @Scheduled(cron = "0 1,31 * * * *")
       fun checkAuroraForUsers() = runBlocking {
-            val points = getAuroraPoints()
+            val points = auroraPointService.getAuroraPoints()
             if (points.isEmpty()) return@runBlocking
 
             val kp = getKpIndex() ?: return@runBlocking
