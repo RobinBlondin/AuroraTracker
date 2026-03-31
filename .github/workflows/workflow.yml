@@ -39,14 +39,14 @@ jobs:
             --file Dockerfile \
             --push .
 
-      - name: Call deploy hook
-        env:
-          WEBHOOK_SECRET: ${{ secrets.WEBHOOK_SECRET }}
-          DEPLOY_URL: ${{ secrets.DEPLOY_URL }}
-        run: |
-          payload='{"deploy":"start"}'
-          sig=$(echo -n $payload | openssl dgst -sha256 -hmac "$WEBHOOK_SECRET" | sed 's/^.* //')
-          curl -X POST $DEPLOY_URL \
-            -H "X-Hub-Signature-256: sha256=$sig" \
-            -H "Content-Type: application/json" \
-            -d "$payload"
+      - name: SSH into server, pull and deploy latest image from Docker Hub
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_PRIVATE_KEY }}
+          port: ${{ secrets.VPS_PORT }}
+          script: |
+            cd /opt/apps
+            docker compose pull aurora_tracker
+            docker compose up -d --no-deps aurora_tracker
