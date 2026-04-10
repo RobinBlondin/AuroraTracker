@@ -8,7 +8,8 @@ data class EnvConfig(
       val db: DbConfig,
       val vapid: VapidConfig,
       val firebase: FirebaseConfig,
-      val secrets: SecretConfig
+      val secrets: SecretConfig,
+      val twilio: TwilioConfig
 ) {
       data class ApiConfig(val url: Urls) {
             data class Urls(val noaa: String, val kp: String, val met: String)
@@ -27,4 +28,11 @@ data class EnvConfig(
             val measurementId: String
       )
       data class SecretConfig(val push: String, val key: String)
+      data class TwilioConfig(
+            val accountSid: String,
+            val authToken: String,
+            val phoneNumber: String,
+            val sendgridApiKey: String,
+
+      )
 }
