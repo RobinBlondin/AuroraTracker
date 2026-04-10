@@ -55,5 +55,12 @@ env:
     push: ${SECRET_PUSH}
     key: ${SECRET_KEY}
 
+  twilio:
+    account-sid: ${TWILIO_ACCOUNT_SID}
+    auth-token: ${TWILIO_AUTH_TOKEN}
+    phone-number: ${TWILIO_PHONE_NUMBER}
+    sendgrid-api-key: ${TWILIO_SENDGRID_API_KEY}
+
+
 
 
