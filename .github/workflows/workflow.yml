@@ -1,4 +1,3 @@
-
 name: Docker image build and GitOps deploy
 
 on:
