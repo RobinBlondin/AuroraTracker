@@ -8,8 +8,10 @@ data class EnvConfig(
       val db: DbConfig,
       val vapid: VapidConfig,
       val firebase: FirebaseConfig,
-      val secrets: SecretConfig
+      val secrets: SecretConfig,
+      val carto: CartoConfig
 ) {
+      data class CartoConfig(val apiKey: String)
       data class ApiConfig(val url: Urls) {
             data class Urls(val noaa: String, val kp: String, val met: String)
       }

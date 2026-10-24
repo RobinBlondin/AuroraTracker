@@ -27,7 +27,8 @@ class ConfigController(
     self.APP_KEYS = {
       webPushVapidKey: "${env.vapid.publicKey}",
       firebaseVapidKey: "${env.firebase.vapidKey}",
-      secretKey: "${env.secrets.key}"
+      secretKey: "${env.secrets.key}",
+      cartoKey: "${env.carto.apiKey}"
     };
   """.trimIndent()
 }

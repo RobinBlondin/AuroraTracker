@@ -54,5 +54,9 @@ env:
     push: ${SECRET_PUSH}
     key: ${SECRET_KEY}
 
+  leaflet:
+    carto:
+      api-key: ${CARTO_API_KEY}
+
 
 

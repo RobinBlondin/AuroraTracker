@@ -12,7 +12,7 @@ navigator.serviceWorker.register("/sw.js").catch(err => {
 
 const map = L.map("map").setView([51.505, -0.09], 12);
 
-L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+L.tileLayer(`https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png?keys=${keys.cartoKey}`, {
     attribution: '&copy; <a href="https://carto.com/attributions">CARTO</a>',
     subdomains: 'abcd',
     maxZoom: 19
