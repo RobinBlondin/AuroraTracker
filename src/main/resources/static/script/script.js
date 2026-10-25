@@ -60,7 +60,7 @@ function fetchAndPrintAuroraPoints() {
                 })
                 .pointColor((d) => {
                     const norm = d.probability / maxProb;
-                    const opacity = norm;
+                    const opacity = Math.pow(norm, 2.5);
                     return `rgba(0, 255, 100, ${opacity})`;
                 })
                 .pointsMerge(true);

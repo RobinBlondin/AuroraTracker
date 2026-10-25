@@ -4,11 +4,13 @@
     border-radius: 0.75rem;
     padding: 1rem;
     color: #cfd8dc;
+    width: 80%;
 }
 
 .signup-panel h3 {
     color: #00f5a0;
     margin-bottom: 1rem;
+
 }
 
 .back-button-container {

@@ -2,6 +2,7 @@ package com.example.auroratracker.controller
 
 import com.example.auroratracker.dto.EmailDto
 import com.example.auroratracker.service.EmailService
+import org.springframework.http.HttpStatus
 import org.springframework.http.HttpStatusCode
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
@@ -18,6 +19,6 @@ class EmailController(
       @PostMapping("send")
       fun sendEmail(@RequestBody dto: EmailDto): ResponseEntity<String> {
             val response = emailService.sendEmail(dto.to, dto.from, dto.subject, dto.content)
-            return ResponseEntity(HttpStatusCode(response.statusCode)
+            return ResponseEntity(HttpStatus.valueOf(response.statusCode))
       }
 }
