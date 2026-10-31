@@ -1,0 +1,111 @@
+.verification-page {
+    min-height: 100dvh;
+    gap: 2rem;
+    padding: 0 1rem 1.5rem;
+}
+
+.brand-link {
+    text-decoration: none;
+    text-align: center;
+}
+
+.panel {
+    width: 100%;
+    max-width: 560px;
+    margin: auto;
+    padding: 2rem;
+    background-color: rgba(26, 40, 71, 0.6);
+    border: 2px solid rgba(0, 255, 135, 0.15);
+    border-radius: 0.75rem;
+    color: #cfd8dc;
+    text-align: center;
+}
+
+.status-icon {
+    display: grid;
+    place-items: center;
+    width: 3rem;
+    height: 3rem;
+    margin: 0 auto 1.25rem;
+    border: 1px solid rgba(0, 255, 135, 0.3);
+    border-radius: 50%;
+    background-color: rgba(10, 17, 40, 0.8);
+    font-size: 1.5rem;
+}
+
+.success {
+    color: #00f5a0;
+}
+
+.warning {
+    color: #f1c40f;
+    border-color: rgba(241, 196, 15, 0.3);
+}
+
+.eyebrow {
+    margin-bottom: 0.75rem;
+    color: #00f5a0;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+}
+
+.result-title {
+    margin-bottom: 1rem;
+    color: #00f5a0;
+    font-size: clamp(1.4rem, 5vw, 1.8rem);
+    line-height: 1.2;
+}
+
+.description {
+    margin-bottom: 1.5rem;
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+
+.primary-button {
+    display: inline-block;
+    padding: 0.6rem 1rem;
+    border-radius: 0.5rem;
+    background-color: rgba(0, 245, 160, 0.8);
+    box-shadow: 0 0 6px rgba(0, 255, 160, 0.4), 0 0 12px rgba(0, 255, 160, 0.2);
+    color: #0a1128;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.primary-button:hover {
+    filter: brightness(1.05);
+}
+
+.primary-button:active {
+    transform: scale(0.97);
+}
+
+.primary-button:focus-visible,
+.brand-link:focus-visible {
+    outline: 2px solid #00f5a0;
+    outline-offset: 4px;
+}
+
+.verification-page footer {
+    color: #cfd8dc;
+    opacity: 0.75;
+    text-align: center;
+    font-size: 0.75rem;
+}
+
+.verification-page footer span {
+    margin: 0 0.5rem;
+}
+
+@media (max-width: 500px) {
+    .panel {
+        padding: 1.5rem 1rem;
+    }
+
+    .primary-button {
+        width: 100%;
+    }
+}
