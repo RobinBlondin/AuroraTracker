@@ -28,7 +28,7 @@ body {
 .hero {
     display: flex;
     flex-direction: column;
-    max-height: 100vh;
+    max-height: 100dvh;
     gap: 0.5rem;
     padding-bottom: 0.5rem
 }
@@ -310,12 +310,6 @@ body {
     }
 }
 
-@media (max-height: 860px) {
-
-    .hero {
-        min-height: 100vh;
-    }
-}
 
 @media (max-width: 600px) {
     .button-actions {
@@ -340,16 +334,16 @@ body {
     }
 }
 
-@media (max-width: 374px) {
-    .sign-up-container {
-        display: none;
+@media (max-width: 375px) {
+
+    .sub-button, .manage-alerts-button{
+        flex: 1;
     }
 
     .button-actions {
         width: 100%;
         flex-direction: row;
-        justify-content: space-evenly;
+    
     }
-
 }
 
