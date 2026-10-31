@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Aurora Tracker – Alerts</title>
+    <link rel="stylesheet" href="/css/index.css"/>
+    <link rel="stylesheet" href="/css/signup.css"/>
+</head>
+<body>
+
+<div class="wrapper">
+
+    <header class="header">
+        <p class="logo">Aurora Tracker</p>
+        <p class="slogan">Get notified when the aurora appears</p>
+    </header>
+
+    <section class="signup-panel">
+
+        <div class="back-button-container">
+            <h3>Enable Aurora Alerts</h3>
+            <button type="button" class="secondary-button back-button" onclick="history.back()">
+                Back
+            </button>
+        </div>
+
+
+
+        <form class="signup-form" id="signup-form">
+
+            <div class="form-section">
+                <label>Notification method</label>
+
+                <div class="radio-group">
+                    <label>
+                        <input type="radio" name="method" value="email">
+                        Email
+                    </label>
+
+                    <label>
+                        <input type="radio" name="method" value="push">
+                        Push notifications
+                    </label>
+
+                    <label>
+                        <input type="radio" name="method" value="both" checked>
+                        Email and push notifications
+                    </label>
+                </div>
+
+                <div id="email-section">
+                    <label for="email">Email address</label>
+                    <input
+                            type="email"
+                            id="email"
+                            placeholder="you@example.com"
+                            required
+                    >
+                </div>
+            </div>
+
+            <div class="form-section">
+                <label>Location</label>
+
+                <div class="location-row">
+                    <button
+                            type="button"
+                            class="secondary-button"
+                            id="get-location"
+                    >
+                        Use my current location
+                    </button>
+
+                    <div class="coordinates">
+                        <input type="text" id="lat"
+                               placeholder="Latitude" readonly required>
+                        <input type="text" id="lon"
+                               placeholder="Longitude" readonly required>
+                    </div>
+                </div>
+
+                <p class="hint" id="location-status">
+                    Coordinates are rounded to approximately 100 meters.
+                </p>
+            </div>
+
+            <div class="form-section">
+                <label>Notification preferences</label>
+
+                <div class="radio-group">
+                    <label>
+                        <input type="radio" name="level" value="ALL">
+                        All aurora activity
+                    </label>
+
+                    <label>
+                        <input type="radio" name="level" value="CLEAR">
+                        Only when skies are clear
+                    </label>
+
+                    <label>
+                        <input type="radio" name="level"
+                               value="CLEAR_AND_STRONG" checked>
+                        Only when skies are clear and activity is strong
+                    </label>
+                </div>
+
+                <p class="hint">
+                    You will receive at most one alert per aurora event.
+                </p>
+            </div>
+
+            <button type="submit" class="sub-button full-width"
+                    id="submit-button">
+                Enable alerts
+            </button>
+
+            <p class="hint" id="signup-status" role="status"></p>
+
+            <p class="footer-note">
+                Free service. No ads. Unsubscribe anytime.
+            </p>
+        </form>
+    </section>
+</div>
+<script src="/config.js"></script>
+<script src="/keys.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-messaging-compat.js"></script>
+<script type="module" src="/script/signup.js"></script>
+</body>
+</html>
