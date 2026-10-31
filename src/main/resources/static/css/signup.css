@@ -1,8 +1,7 @@
-/*.wrapper {*/
-/*    display: flex;*/
-/*    align-items: center;*/
-/*    justify-content: center;*/
-/*}*/
+.coordinates {
+    display: flex;
+}
+
 
 .signup-panel {
     background-color: rgba(26, 40, 71, 0.6);
@@ -10,7 +9,7 @@
     border-radius: 0.75rem;
     padding: 1rem;
     color: #cfd8dc;
-    width: 80%;
+    width: 60%;
     align-self: center;
 }
 
@@ -28,7 +27,7 @@
 .signup-form {
     display: flex;
     flex-direction: column;
-    gap: 1.2rem;
+    gap: 0.5rem;
 }
 
 .form-section {
@@ -83,7 +82,7 @@ input::placeholder {
     color: #cfd8dc;
 }
 
-.radio-group input {
+.radio-group {
     margin-right: 0.5rem;
 }
 
@@ -122,6 +121,7 @@ input::placeholder {
     border: 1px solid rgba(0, 255, 135, 0.3);
     border-radius: 0.4rem;
     cursor: pointer;
+    text-decoration: none;
 }
 
 .back-button:hover {
@@ -134,14 +134,14 @@ input::placeholder {
 }
 
 .footer-note {
-    font-size: 0.75rem;
-    opacity: 0.75;
     text-align: center;
 }
 
-.hint {
-    font-size: 0.75rem;
+
+.hint, .footer-note {
+    font-size: 0.85rem;
     opacity: 0.75;
+    padding: 0.5rem 0 0.5rem 0;
 }
 
 #email:disabled {
@@ -149,3 +149,30 @@ input::placeholder {
     cursor: not-allowed;
     background-color: #1a1a1a;
 }
+
+#lat, #lon {
+    flex: 1;
+    min-width: 0;
+    box-sizing: border-box;
+}
+
+#email-section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em;
+    padding: 0.5em 0 0.5em 0;
+}
+
+@media (max-width: 600px) {
+    .signup-panel {
+        width: 90%;
+    }
+}
+
+@media (max-width: 400px) {
+    .signup-panel {
+        width: 95%;
+    }
+}
+
+
