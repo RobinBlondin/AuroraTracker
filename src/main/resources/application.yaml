@@ -20,6 +20,11 @@ logging:
     com.example.auroratracker.service.TrackingService: INFO
 
 server:
+  servlet:
+    session:
+      cookie:
+        http-only: true
+        same-site: lax
   address: 0.0.0.0
 
 env:
@@ -50,12 +55,19 @@ env:
     app-id: ${FIREBASE_APP_ID}
     measurement-id: ${FIREBASE_MEASUREMENT_ID}
 
-  secrets:
-    push: ${SECRET_PUSH}
-    key: ${SECRET_KEY}
-
   carto:
     api-key: ${CARTO_API_KEY}
 
+  resend:
+    api-key: ${RESEND_API_KEY}
+    verification-url: ${VERIFICATION_URL}
 
 
+
+
+# Public globe data: process-local cache and per-client limits.
+aurora:
+  points:
+    cache-ttl: 60s
+    requests-per-minute: 60
+    max-tracked-clients: 10000

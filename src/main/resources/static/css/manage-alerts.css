@@ -1,0 +1,88 @@
+.manage-signup-panel {
+    background-color: rgba(26, 40, 71, 0.6);
+    border: 2px solid rgba(0, 255, 135, 0.15);
+    border-radius: 0.75rem;
+    padding: 1rem;
+    color: #cfd8dc;
+    width: 70%;
+    align-self: center;
+}
+
+#manage-form[hidden] {
+    display: none;
+}
+
+#manage-form .full-width {
+    width: 100%;
+}
+
+#manage-form .danger-button {
+    border: 1px solid #d56c75;
+    color: #ff9ca4;
+    background: transparent;
+    cursor: pointer;
+    padding: 12px;
+    border-radius: 8px;
+}
+
+#manage-form .danger-button:hover {
+    background: rgba(213, 108, 117, .12);
+}
+
+#manage-form input:disabled, #manage-form button:disabled {
+    opacity: .55;
+    cursor: not-allowed;
+}
+
+#manage-form {
+    padding: 0.5rem 0 0.5rem 0;
+}
+
+.recovery-section[hidden], #manage-form[hidden] {
+    display: none;
+}
+
+.recovery-section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.recovery-section h4 {
+    color: #00f5a0;
+}
+
+.recovery-section p {
+    line-height: 1.5;
+}
+
+.recovery-section button {
+    font-family: inherit;
+}
+
+.recovery-section button:disabled {
+    opacity: .55;
+    cursor: not-allowed;
+}
+
+.recovery-section input {
+    width: 100%;
+    min-width: 0;
+}
+
+.recovery-section button:focus-visible {
+    outline: 2px solid #00f5a0;
+    outline-offset: 3px;
+}
+
+@media (max-width: 600px) {
+    .manage-signup-panel {
+        width: 90%;
+    }
+}
+
+@media (max-width: 400px) {
+    .manage-signup-panel {
+        width: 95%;
+    }
+}

@@ -1,16 +1,20 @@
 package com.example.auroratracker.service
 
 import com.example.auroratracker.config.EnvConfig
+import com.example.auroratracker.dto.SubscriptionDto
 import com.google.auth.oauth2.GoogleCredentials
 import com.google.firebase.FirebaseApp
 import com.google.firebase.FirebaseOptions
 import com.google.firebase.messaging.FirebaseMessaging
+import com.google.firebase.messaging.FirebaseMessagingException
 import com.google.firebase.messaging.Message
+import com.google.firebase.messaging.MessagingErrorCode
 import org.springframework.stereotype.Service
 
 @Service
 class FirebaseService(
-      private val env: EnvConfig
+      private val env: EnvConfig,
+      private val subscriptionService: SubscriptionService
 ) {
 
       init {
@@ -32,7 +36,19 @@ class FirebaseService(
             }
       }
 
-      fun sendNotification(token: String, cloudCover: Double) {
+      fun sendManagementNotification(token: String, url: String) {
+            val message = Message.builder()
+                  .setToken(token)
+                  .putData("title", "Aurora Tracker")
+                  .putData("body", "Tap to manage your alert preferences. Only continue if you requested this.")
+                  .putData("url", url)
+                  .putData("type", "management")
+                  .setWebpushConfig(com.google.firebase.messaging.WebpushConfig.builder().putHeader("TTL", "600").build())
+                  .build()
+            FirebaseMessaging.getInstance().send(message)
+      }
+
+      fun sendNotification(token: String, cloudCover: Double, sub: SubscriptionDto): Boolean {
             val message = Message.builder()
                   .setToken(token)
                   .putData("title", "Aurora Alert")
@@ -43,9 +59,23 @@ class FirebaseService(
             try {
                   val response = FirebaseMessaging.getInstance().send(message)
                   println("Sent Firebase message: $response")
-            } catch (e: Exception) {
-                  e.printStackTrace()
-                  println("Failed to send Firebase notification: ${e.message}")
+                  return true
+            } catch (e: FirebaseMessagingException) {
+                  when (e.messagingErrorCode) {
+                        MessagingErrorCode.UNREGISTERED -> {
+                              println("Firebase token expired: $token")
+                              subscriptionService.handleInvalidPushSubscription(sub)
+                              return false
+                        }
+                        MessagingErrorCode.INVALID_ARGUMENT -> {
+                              println("Invalid Firebase request/token: ${e.message}")
+                              return false
+                        }
+                        else -> {
+                              println("Firebase error: ${e.messagingErrorCode}")
+                              return false
+                        }
+                  }
             }
       }
 }

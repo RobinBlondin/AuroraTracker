@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0a1128">
+  <title>Email verification – Aurora Tracker</title>
+  <link rel="stylesheet" href="/css/index.css" th:href="@{/css/index.css}">
+  <link rel="stylesheet" th:href="@{/css/verification.css}" href="/css/verification.css">
+</head>
+<body>
+<main class="wrapper verification-page">
+  <header class="header">
+    <a class="logo brand-link" th:href="@{/}" href="/">Aurora Tracker</a>
+    <p class="slogan">Chase the northern lights</p>
+  </header>
+  <section class="panel" aria-label="Email verification result">
+    <div class="content">
+      <th:block th:switch="${status}">
+        <th:block th:case="'success'">
+          <div class="status-icon success" aria-hidden="true">✓</div>
+          <p class="eyebrow">EMAIL CONFIRMED</p>
+          <h1 class="result-title">You're all set!</h1>
+          <p class="description">Your email address has been verified. You'll now receive email alerts when the northern lights might be visible near you.</p>
+        </th:block>
+        <th:block th:case="'expired'">
+          <div class="status-icon warning" aria-hidden="true">⌛</div>
+          <p class="eyebrow">LINK EXPIRED</p>
+          <h1 class="result-title">Your link has expired</h1>
+          <p class="description">This verification link is no longer valid. Please contact Aurora Tracker for help verifying your subscription.</p>
+        </th:block>
+        <th:block th:case="*">
+          <div class="status-icon warning" aria-hidden="true">!</div>
+          <p class="eyebrow">VERIFICATION FAILED</p>
+          <h1 class="result-title">Invalid verification link</h1>
+          <p class="description">This link is invalid or has already been used. If your email is already verified, no further action is needed.</p>
+        </th:block>
+      </th:block>
+      <a class="primary-button" th:href="${status == 'expired'} ? @{/signup} : @{/}" th:text="${status == 'expired'} ? 'Back to registration' : 'Explore Aurora Tracker'" href="/">Explore Aurora Tracker</a>
+    </div>
+  </section>
+  <footer>Aurora Tracker <span>·</span> Never miss the lights</footer>
+</main>
+</body>
+</html>

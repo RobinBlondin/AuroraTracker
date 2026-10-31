@@ -15,13 +15,15 @@ self.addEventListener("push", (event) => {
         data = { body: event.data.text() };
     }
 
+    if (data.data) data = data.data;
+
     const title = data.title || "Aurora Alert";
     const options = {
         body: data.body || "Aurora activity has been detected near your location!",
         icon: "/images/icon-192.png",
         badge: "/images/icon-192.png",
         data: data.url || "/",
-        tag: "aurora_alert"
+        tag: data.type === "management" ? "aurora_management" : "aurora_alert"
     };
 
     event.waitUntil(self.registration.showNotification(title, options));
@@ -29,7 +31,14 @@ self.addEventListener("push", (event) => {
 
 self.addEventListener("notificationclick", (event) => {
     event.notification.close();
-    event.waitUntil(clients.openWindow(event.notification.data));
+    let url;
+    try {
+        url = new URL(event.notification.data || "/", self.location.origin);
+        if (url.origin !== self.location.origin) return;
+    } catch {
+        return;
+    }
+    event.waitUntil(clients.openWindow(url.href));
 });
 
 importScripts("/config.js");

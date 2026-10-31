@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="referrer" content="no-referrer">
+  <title>Manage Alerts – Aurora Tracker</title>
+  <link rel="stylesheet" th:href="@{/css/index.css}" href="/css/index.css">
+  <link rel="stylesheet" th:href="@{/css/signup.css}" href="/css/signup.css">
+  <link rel="stylesheet" th:href="@{/css/manage-alerts.css}" href="/css/manage-alerts.css">
+</head>
+<body>
+<div class="wrapper">
+  <header class="header">
+    <p class="logo">Aurora Tracker</p>
+    <p class="slogan">Chase the northern lights</p>
+  </header>
+  <section class="manage-signup-panel">
+    <div class="back-button-container">
+      <h3>Manage Aurora Alerts</h3>
+      <a class="secondary-button back-button" href="/">Back</a>
+    </div>
+    <p class="hint">Update your location and notification preferences.</p>
+    <section id="verify-link" class="recovery-section" hidden aria-label="Confirm management link">
+      <p>Continue to securely manage your Aurora Tracker subscription.</p>
+      <button type="button" id="verify-link-button" class="sub-button full-width">Continue to manage alerts</button>
+      <p class="hint">Only continue if you requested this link.</p>
+    </section>
+    <section id="recovery-options" class="recovery-section" hidden aria-labelledby="recovery-title">
+      <h4 id="recovery-title">Verify your subscription</h4>
+      <p class="hint">Choose how to receive a secure link. Links expire in 10 minutes and can be used once.</p>
+      <button type="button" id="verify-push-button" class="secondary-button full-width">Verify this browser with a notification</button>
+      <p class="hint">Use the browser where you enabled push alerts, or verify by email below.</p>
+      <form id="recovery-email-form" class="signup-form">
+        <div class="form-section">
+          <label for="recovery-email">Subscription email address</label>
+          <input id="recovery-email" type="email" autocomplete="email" placeholder="your-email@example.com" maxlength="254" required>
+        </div>
+        <button type="submit" id="verify-email-button" class="sub-button full-width">Email me a management link</button>
+      </form>
+    </section>
+    <form id="manage-form" hidden class="signup-form" >
+      <div class="form-section">
+        <label>Location</label>
+        <div class="location-row">
+          <button type="button" id="get-location" class="secondary-button">Use my current location</button>
+          <div class="coordinates">
+            <input type="text" id="lat" placeholder="Latitude" readonly required>
+            <input type="text" id="lon" placeholder="Longitude" readonly required>
+          </div>
+        </div>
+        <p class="hint" id="location-status">Coordinates are rounded to 3 decimal places.</p>
+      </div>
+      <div class="form-section">
+        <label>Notification preferences</label>
+        <div class="radio-group">
+          <label><input type="radio" name="level" value="ALL"> All aurora activity</label>
+          <label><input type="radio" name="level" value="CLEAR"> Only when skies are clear</label>
+          <label><input type="radio" name="level" value="CLEAR_AND_STRONG"> Only when skies are clear and activity is strong</label>
+        </div>
+      </div>
+      <button type="submit" class="sub-button full-width" id="save-button">Save changes</button>
+      <button type="button" class="secondary-button full-width danger-button" id="unsubscribe-button">Unsubscribe</button>
+    </form>
+    <p id="manage-status" class="hint" role="status" aria-live="polite">Loading your subscription...</p>
+  </section>
+</div>
+<script src="/config.js"></script>
+<script src="/keys.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-messaging-compat.js"></script>
+<script type="module" th:src="@{/script/manage-alerts.js}" src="/script/manage-alerts.js"></script>
+</body>
+</html>

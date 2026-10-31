@@ -8,8 +8,8 @@ data class EnvConfig(
       val db: DbConfig,
       val vapid: VapidConfig,
       val firebase: FirebaseConfig,
-      val secrets: SecretConfig,
-      val carto: CartoConfig
+      val carto: CartoConfig,
+      val resend: ResendConfig
 ) {
       data class CartoConfig(val apiKey: String)
       data class ApiConfig(val url: Urls) {
@@ -28,5 +28,5 @@ data class EnvConfig(
             val appId: String,
             val measurementId: String
       )
-      data class SecretConfig(val push: String, val key: String)
+      data class ResendConfig(val apiKey: String, val verificationUrl: String)
 }
