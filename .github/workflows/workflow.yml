@@ -25,6 +25,9 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
+      - name: Run tests
+        run: ./gradlew test
+
       - name: Build with Gradle
         run: ./gradlew bootJar
 

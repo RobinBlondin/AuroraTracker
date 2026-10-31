@@ -25,7 +25,7 @@ class RegistrationControllerTest {
         every { env.resend } returns EnvConfig.ResendConfig("unused", "http://localhost/verification/")
         limiter = SubscriptionRequestRateLimiter()
         mvc = MockMvcBuilders.standaloneSetup(SubscriptionController(
-            mockk(), env, SubscriptionRequestGuard(limiter, env), registration, ManagementSessionService()
+            SubscriptionRequestGuard(limiter, env), registration, ManagementSessionService()
         )).build()
     }
 

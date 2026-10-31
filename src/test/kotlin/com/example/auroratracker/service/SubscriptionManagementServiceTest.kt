@@ -15,7 +15,7 @@ import kotlin.test.*
 class SubscriptionManagementServiceTest {
     private val repository = mockk<SubscriptionRepository>()
     private val verifications = mockk<EmailVerificationRepository>()
-    private val service = SubscriptionService(repository, mockk(), mockk<SubscriptionMapper>(), EmailVerificationService(verifications))
+    private val service = SubscriptionService(repository, mockk(), mockk<SubscriptionMapper>(), EmailVerificationService(verifications, repository))
 
     @Test
     fun `invalid coordinates are rejected before saving`() {
