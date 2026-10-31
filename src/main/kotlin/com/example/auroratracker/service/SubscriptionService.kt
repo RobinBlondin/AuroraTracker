@@ -1,30 +1,63 @@
 package com.example.auroratracker.service
 
 import com.example.auroratracker.dto.SubscriptionDto
-import com.example.auroratracker.dto.SubscriptionLiteDto
+import org.springframework.web.server.ResponseStatusException
 import com.example.auroratracker.dto.WeatherResponseDto
+import com.example.auroratracker.entity.EmailVerification
 import com.example.auroratracker.mapper.SubscriptionMapper
 import com.example.auroratracker.repository.SubscriptionRepository
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.time.LocalDateTime
+import com.example.auroratracker.dto.ManageSubscriptionDto
 import java.time.ZoneOffset
 import java.time.ZonedDateTime
 import java.util.*
+import com.example.auroratracker.dto.ManageSubscriptionPatchDto
 
 @Service
 class SubscriptionService(
       private val subRepo: SubscriptionRepository,
       private val jsonService: JsonService,
-      private val mapper: SubscriptionMapper,
+      private val subMapper: SubscriptionMapper,
+    private val emailVerificationService: EmailVerificationService,
 ) {
-      fun getAllSubs() = subRepo.findAll().map { mapper.toDto(it) }
+      private fun managedEntity(userId: String) = subRepo.getByUserId(userId).orElseThrow {
+            ResponseStatusException(org.springframework.http.HttpStatus.NOT_FOUND)
+      }
+
+      private fun managedDto(sub: com.example.auroratracker.entity.Subscription) =
+            ManageSubscriptionDto(
+                  sub.lat ?: 0.0, sub.lon ?: 0.0, sub.notificationLevel, sub.enabled
+            )
+
+      @Transactional(readOnly = true)
+      fun getManagedSubscription(userId: String) = managedDto(managedEntity(userId))
+
+      @Transactional
+      fun updateManagedSubscription(userId: String, patch: ManageSubscriptionPatchDto): ManageSubscriptionDto {
+            SubscriptionValidation.location(patch.lat, patch.lon)
+            val sub = managedEntity(userId)
+            patch.lat?.let { sub.lat = it }
+            patch.lon?.let { sub.lon = it }
+            patch.notificationLevel?.let { sub.notificationLevel = it }
+            patch.enabled?.let { sub.enabled = it }
+            return managedDto(subRepo.save(sub))
+      }
+
+      @Transactional
+      fun deleteManagedSubscription(userId: String) {
+            val sub = managedEntity(userId)
+            emailVerificationService.repo.deleteBySubscription_UserId(userId)
+            subRepo.delete(sub)
+      }
+
+      fun getAllSubs() = subRepo.findAll().map { subMapper.toDto(it) }
 
       fun getSubByUserId(id: String): Optional<SubscriptionDto> {
-            return subRepo.getByUserId(id).map { mapper.toDto(it) }
+            return subRepo.getByUserId(id).map { subMapper.toDto(it) }
       }
       @Transactional
-      fun saveSub(subDto: SubscriptionDto): SubscriptionDto = mapper.toEntity(subDto).let { mapper.toDto(subRepo.save(it)) }
+      fun saveSub(subDto: SubscriptionDto): SubscriptionDto = subMapper.toEntity(subDto).let { subMapper.toDto(subRepo.save(it)) }
 
     @Transactional
       fun deleteSubByUserId(id: String): Boolean {
@@ -35,18 +68,19 @@ class SubscriptionService(
             return true
       }
 
-      @Transactional
-      fun updateLonAndLat(dto: SubscriptionDto) {
-            val sub = getSubByUserId(dto.userId!!).orElse(null) ?: return
+    @Transactional
+    fun createSubscription(dto: SubscriptionDto): EmailVerification {
+        val subscription = saveSub(dto)
 
-            sub.lon = dto.lon
-            sub.lat = dto.lat
-            sub.updatedAt = LocalDateTime.now()
 
-            saveSub(sub)
-      }
+        val verification = EmailVerification(
+            subscription = subMapper.toEntity(subscription),
+            token = UUID.randomUUID().toString()
+        )
 
-      fun checkIfSubExists(dto: SubscriptionDto): Boolean = subRepo.existsByUserId(dto.userId!!)
+        emailVerificationService.save(verification)
+        return verification
+    }
 
       fun getWeatherData (dto: SubscriptionDto): WeatherResponseDto? {
             val url =
@@ -64,17 +98,11 @@ class SubscriptionService(
             return currentTime.isAfter(sunsetTime)
       }
 
-      fun getCloudCover(weatherData: WeatherResponseDto): Double {
-            return weatherData.current?.cloudCover ?: 100.0
-      }
-
-      fun toLiteDto(dto: SubscriptionDto): SubscriptionLiteDto = SubscriptionLiteDto(dto.lon, dto.lat, dto.lastNotificationTime)
-
       fun updateLastNotificationTime(dto: SubscriptionDto): SubscriptionDto {
-            val updatedUser = mapper.toEntity(dto).apply {
+            val updatedUser = subMapper.toEntity(dto).apply {
                   lastNotificationTime = ZonedDateTime.now(ZoneOffset.UTC)
             }
-            return mapper.toDto(subRepo.save(updatedUser))
+            return subMapper.toDto(subRepo.save(updatedUser))
       }
 
 
@@ -83,4 +111,21 @@ class SubscriptionService(
                   ZonedDateTime.now(ZoneOffset.UTC).minusHours(12).isBefore(it)
             } ?: false
       }
+
+    @Transactional
+    fun handleInvalidPushSubscription(
+        sub: SubscriptionDto
+    ): Boolean {
+        if (sub.email.isNullOrBlank()) {
+            deleteSubByUserId(sub.userId!!)
+            return false
+        } else {
+            sub.auth = null
+            sub.p256dh = null
+            sub.endpoint = null
+            sub.firebaseToken = null
+            saveSub(sub)
+            return true
+        }
+    }
 }
