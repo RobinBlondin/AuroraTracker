@@ -29,8 +29,18 @@ class WebSecurityConfig {
       @Bean
       fun corsConfigurationSource(): CorsConfigurationSource {
             val config = CorsConfiguration()
+<<<<<<< Updated upstream
             config.allowedOrigins = listOf(
                   "https://www.auroratracker.se",
+=======
+<<<<<<< Updated upstream
+            config.allowedOrigins = listOf("https://www.auroratracker.se")
+            config.allowedMethods = listOf("GET", "POST", "PUT", "DELETE")
+=======
+            config.allowedOrigins = listOf(
+                  "https://www.auroratracker.se",
+                  "https://auroratracker.se",
+>>>>>>> Stashed changes
                   "http://localhost:5500",
                   "http://localhost:8080",
                   "http://127.0.0.1:5500",
@@ -38,6 +48,10 @@ class WebSecurityConfig {
             )
 
             config.allowedMethods = listOf("GET", "POST", "PUT", "PATCH", "DELETE")
+<<<<<<< Updated upstream
+=======
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
             config.allowedHeaders = listOf("*")
 
             val source = UrlBasedCorsConfigurationSource()
