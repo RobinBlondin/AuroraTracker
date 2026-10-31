@@ -7,4 +7,10 @@ package com.example.auroratracker.domain
  * @property maxDistance Maximum distance from the aurora point in meters.
  * @property minProbability Minimum probability value in a NOAA aurora point data
  */
-data class Thresholds(val minKp: Int, val maxDistance: Double, val minProbability: Int)
+data class Thresholds(
+    val minKp: Int,
+    val maxDistance: Double,
+    val minProbability: Int,
+    val maxCloudCover: Double,
+    val minElevation: Double
+)
